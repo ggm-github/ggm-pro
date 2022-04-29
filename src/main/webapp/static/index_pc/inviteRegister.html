@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>操场欢迎你的加入</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="shortcut icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <style>
+        .main-div{
+            width:100%;
+            margin:0rem;
+        }
+        .head-div{
+            margin:0rem;
+            /*background-image:url(./img/invitation/inv2_bg.png);*/
+            /*background-repeat:no-repeat;*/
+            /*background-size:100% 100%;*/
+            /*-moz-background-size:100% 100%;*/
+            height: 100%;
+            width: 100%;
+            height: 480px;
+            position: absolute;
+        }
+
+        .invite-info{
+            margin-left: 5%;
+            margin-right: 5%;
+            background-color: #ffffff;
+            width:90%;
+            height:12rem;
+            margin-top: 25%;
+            border-radius: 5px;
+        }
+
+        .info-title p{
+            text-align: center;
+            margin-top: 5rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .register-info{
+            padding:20px;
+            height: 10rem;
+        }
+
+        .invite-input{
+            width: 80%;
+            height: 50px;
+            font-family: PingFangSC-Light;
+            padding: 0rem 5%;
+            background-color: #ffffff;
+            outline:none;
+            border-left: none;
+            border-top: none;
+            border-right: none;
+            border-bottom: solid 0.2px #ccc;
+            margin-left: 15px;
+            font-size: 17px;
+            padding-left: 25px;
+        }
+
+        .checkno-btn{
+            position: absolute;
+            padding: 0rem 0.5rem;
+            right: 5px;
+            top: -0.1rem;
+            text-align: center;
+            color: #fdbe4e;
+            font-family: PingFangSC-Light;
+            border-left: 2px solid #fdbe4e;
+        }
+
+        .submit-btn{
+            width: 100%;
+            height: 50px;
+            font-size: 22px;
+            font-family: PingFangSC-Light;
+            color: #ffffff;
+            border-radius: 5px;
+            background-color: #facc5a;
+            outline:none;
+            border: 0px;
+            -webkit-appearance: none;
+            font-weight:bold;
+        }
+
+        .head-divbg{
+            background-image:url(./img/invitation/inv2.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 100%;
+            width: 100%;
+            height: 60%;
+            position: absolute;
+            top: 0px;
+        }
+        .head-divbg .invtext{
+            /*background-image:url(./img/invitation/invtext_bg.png);*/
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 100%;
+            width: 100%;
+            height: 23%;
+            top: 0px;
+
+        }
+        .invtextspan{
+            width: 100%;
+            font-size: 15px;
+            font-color:#999999;
+            font-family: PingFangSC-Light;
+            margin-left: 3px;
+            margin-top: 3px;
+            margin-right: 3px;
+            position: relative;
+        }
+
+        input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+            color: #666;
+            font-size: 14px;
+        }
+
+        input:-moz-placeholder, textarea:-moz-placeholder {
+            color: #666;
+            font-size: 14px;
+        }
+
+        input::-moz-placeholder, textarea::-moz-placeholder {
+            color: #666;
+            font-size: 14px;
+        }
+
+        input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+            color: #666;
+            font-size: 14px;
+        }
+        .head-div-img {
+            width: 11px;
+            position: absolute;
+            top: 13px;
+            left: 22px;
+            margin-right: 3px;
+        }
+        .head-div-img1 {
+            width: 11px;
+            position: absolute;
+            top: 13px;
+            left: 18px;
+            margin-right: 3px;
+        }
+    </style>
+</head>
+<body style="background-color:#ffffff;margin:0rem;">
+
+<div id="mainDiv" class="main-div">
+    <!-- 顶部logo -->
+    <div class="head-div">
+        <div class="head-divbg">
+            <div class="invtext">
+                <div style="padding:10px;">
+
+                </div>
+            </div>
+            <div class="invite-info">
+                <div class="register-info">
+                    <div  style="position:relative;">
+                        <img class="head-div-img" src="./img/invitation/phone.png">
+                        <input id="telephone" type="tel" class="invite-input" placeholder="请输入手机号" maxlength="11" />
+                    </div>
+                    <div style="position:relative;margin-top: 1px;">
+                        <img class="head-div-img1" src="./img/invitation/mail.png" style="width: 15px;margin-top: 5px;">
+                        <input id="shortCode" type="text" class="invite-input" placeholder="请输入验证码" />
+                        <p class="checkno-btn">获取验证码</p>
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <label style="margin-left: 15px;">
+                            <input id="checkbt" type="checkbox"onchange="checkboxOnclick(this)"/>
+                            <span style="font-family: PingFangSC-Light;color: #999999;font-size: 15px;">同意操场</span>
+                        </label>
+                        <a href="https://api.caochangapp.cn/rule/userProtocol.html" style='text-decoration:none;'><span style="font-family: PingFangSC-Light;color: #facc5a;font-size: 15px;">《服务协议及隐私条款》</span></a>
+                    </div>
+                    <div  style="margin-top: 40px;">
+                        <input id="invitationbt" type="button" onclick="addvoteBtClick()" class="submit-btn" value="完成" disabled />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<div style="display:none;">
+    <input type="hidden" id="userId" value="${userId}"/>
+</div>
+
+<script src="./js/jquery-2.0.2.min.js"></script>
+
+<script type="text/javascript">
+
+
+    $(function() {
+        $(".checkno-btn").click(function(){
+            shortMsgTimer();
+        });
+        $("input").blur(function () {
+            $("html,body").animate({scrollTop: document.documentElement.clientHeight},1000);
+        });
+    });
+
+    function checkboxOnclick(checkbox){
+
+        if ( checkbox.checked == true){
+            $("#invitationbt").removeAttr("disabled");
+        }else{
+            $("#invitationbt").attr("disabled","true");
+        }
+
+    }
+
+    var timerRunning = false;
+    function shortMsgTimer(){
+        var telphone = $("#telephone").val();
+        if(telphone == ""){
+            Toast("手机号不能为空");
+            return;
+        }
+        if(!timerRunning){
+            var n = 60;
+            timerRunning = true;
+            var timer = setInterval(function(){
+                if(n > 0){
+                    $(".checkno-btn").text("已发送(" + n + "s)");
+                    n--;
+                }else {
+                    clearInterval(timer);
+                    $(".checkno-btn").text("获取验证码");
+                    timerRunning = false;
+                }
+            },1000);
+
+            getUserId();
+
+            $.ajax({
+                url: "https://api.caochangapp.cn/user/getVerificationCode",
+                type:"post",
+                async: true,
+                dataType:"json",
+                data: {phone: telphone,type:4},
+                success: function (data) {
+                    if(data.success==true){
+                        Toast("验证码已发送，请注意接收",3000);
+                    }else{
+                        if(data.message == 1000){
+                            Toast("手机号已注册");
+                        }else if(data.message == 1013){
+                            Toast("手机号受限无法使用，请联系客服");
+                        }else{
+                            Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                        }
+                        $(".checkno-btn").text("获取验证码");
+                        timerRunning = false;
+                        clearInterval(timer);
+                    }
+                },
+                "error":function (e1,e2,e3) {
+                    $(".checkno-btn").text("获取验证码");
+                    timerRunning = false;
+                    clearInterval(timer);
+                    Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                }
+            });
+        }
+    }
+
+    function getUserId() {
+        $.ajax({
+            url: "https://api.caochangapp.cn/user/getuserIdByPhone",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {phone: $("#telephone").val()},
+            success: function (data) {
+                if(data.success==true){
+                    $("#userId").val(data.result)
+                }else{
+                    $("#userId").val(0);
+                }
+            },
+            "error":function (e1,e2,e3) {
+
+            }
+        });
+    }
+
+    function addvoteBtClick(){
+        var userid = $("#userId").val();
+
+        if(userid==0){
+            registerUser();
+        }else {
+            addInvitation(userid);
+        }
+    }
+
+    function addInvitation(userId){
+
+        var telphone = $("#telephone").val();
+        var shortCode = $("#shortCode").val();
+
+        if(telphone == "" || shortCode == ""){
+            Toast("手机号和验证码不能为空");
+            return;
+        }
+
+        var teamId = geturlpara("teamId");
+        var index = geturlpara("index");
+        var secret = geturlpara("secret");
+        var teamname = decodeURI(geturlpara("teamname"));
+        var InvituserId = geturlpara("userId");
+
+        $.ajax({
+            url: "https://api.caochangapp.cn/team/addInvitation",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {userId: userId,teamId:teamId,index:index,secret:secret,InvituserId:InvituserId,phone: telphone,verificationCode:shortCode},
+            success: function (data) {
+                if(data.success==true){
+                    Toast("已成功向"+teamname+"的队伍发起加入申请");
+                    window.location.href = "https://api.caochangapp.cn/invitation/inviteRegisterSuccess.html"+"?chName="+geturlpara("chName")+"&userPhotopath="+geturlpara("userPhotopath");
+                }else{
+                    Toast("您已经有所属队伍，每个人只能创建/加入一个队伍。");
+                }
+            }
+        });
+    }
+
+    function registerUser(){
+        var telphone = $("#telephone").val();
+        var shortCode = $("#shortCode").val();
+        var userSource = localStorage.getItem("userSource")==null?1:localStorage.getItem("userSource");
+
+        if(telphone == "" || shortCode == ""){
+            Toast("手机号和验证码不能为空");
+            return;
+        }
+        $.ajax({
+            url: "https://api.caochangapp.cn/user/VerificationCodeRegister4H5",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {phone: telphone,verificationCode:shortCode,userSource:userSource},
+            success: function (data) {
+                debugger;
+                if(data.success==true){
+                    addInvitation(data.result.userId);
+                    window.location.href = "https://api.caochangapp.cn/invitation/inviteRegisterSuccess.html"
+                }else{
+                    if(data.message == 1000) {
+                        Toast("手机号已注册");
+                    }else if(data.message == 1008){
+                        Toast("验证码错误");
+                    }else{
+                        Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                    }
+                }
+            }
+        });
+    }
+
+    function geturlpara (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    //模拟toast弹框
+    function Toast(msg,duration){
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="width: 60%;min-width: 150px;opacity: 0.7;height: 30px;color: rgb(255, 255, 255);line-height: 30px;text-align: center;border-radius: 5px;position: fixed;top: 80%;left: 20%;z-index: 999999;background: rgb(0, 0, 0);font-size: 12px;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
+</script>
+</body>
+</html>

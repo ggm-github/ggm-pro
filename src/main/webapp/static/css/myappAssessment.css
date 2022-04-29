@@ -1,0 +1,286 @@
+.myKpiName {
+    float: left;
+    min-width: 130px;
+    width: 45%;
+    text-align: right;
+    word-wrap: break-word;
+}
+
+.kpiData {
+    float: left;
+    min-width: 80px;
+    width: 30%;
+    text-align: right;
+    word-wrap: break-word;
+    line-height: 16px;
+    color: #414142;
+}
+
+.kpiUnit {
+    float: left;
+    text-align: left;
+    word-wrap: break-word;
+}
+.kpiDataBgc0{
+    background-color: #fff4fa;
+}
+.kpiDataBgc1{
+    background-color: #eefff9;
+}
+.kpiDataBgc2{
+    background-color: #f1f5ff;
+}
+.kpiDataBgc3{
+    background-color: #fffbf2;
+}
+
+#myKpiTable tbody tr td {
+    font-family: 'Arial Normal', 'Arial';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 13px;
+    color: #333333;
+    text-align: left;
+    line-height: normal;
+    min-width: 300px;
+    line-height: 17px;
+}
+
+td span {
+    font-size: 15px;
+    margin-left: 5px;
+}
+td div{
+    line-height: 16px;
+}
+
+#content {
+    padding-bottom: 100px;
+}
+
+.content {
+    float: left;
+    font-family: 'Arial Negreta', 'Arial';
+    padding-left: 20px;
+}
+
+#myAppKpiAll {
+    float: left;
+    width: 100%;
+    min-width: 1018px;
+    font-family: 'Arial Negreta', 'Arial';
+    /*font-weight: 700;*/
+}
+
+.kpiChooseLabel {
+    width: 25%;
+    min-width: 180px;
+    float: left;
+    font-family: 'Arial Normal', 'Arial';
+    font-weight: 400;
+    font-style: normal;
+    font-size: 13px;
+    color: #333333;
+    text-align: left;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.kpiAllContent {
+    float: left;
+    min-width: 780px;
+    padding: 5px;
+}
+
+.kpiGroup {
+    float: left;
+    width: 100%;
+}
+.chooseColor {
+    color: #80b952;
+}
+
+.jarviswidget {
+    margin: 0 0 15px;
+}
+
+.jarviswidget-color-blueLight > header {
+    background: #f5f5f5;
+    border-color: #ddd !important;
+}
+
+.jarviswidget .widget-body {
+    min-height: 0;
+}
+
+.fourLabel {
+    width: 100%;
+    background-color: #fff;
+}
+
+#appTestTitle {
+    width: 100%;
+    min-height: 170px;
+    padding: 15px;
+    background-color: #f8f8f8;
+}
+
+#appTestTitle_img {
+    float: left;
+    background-repeat: no-repeat;
+    text-align: center;
+    line-height: 140px;
+    width: 140px;
+    height: 140px;
+    margin-left:15px;
+}
+
+#appTestTitle_text {
+    float: left;
+    width: 50%;
+    min-width: 550px;
+    padding-left: 30px;
+    height: 140px;
+}
+
+#appTestButton {
+    float: right;
+    width: 150px;
+    height: 140px;
+    padding-top: 45px;
+    margin-right: 5%;
+}
+#appTestButton input{
+    background-color: #80B952;
+    font-size: 20px;
+    color: white;
+    width: 250px;
+    height: 50px;
+}
+
+#appTestMain {
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+    padding-top: 120px;
+    text-align: center;
+}
+.uwayUlShow{
+    top: 10px;
+}
+.text {
+    font-family: 'Arial Negreta', 'Arial';
+    font-weight: 700;
+    font-style: normal;
+    color: #333333;
+    text-align: left;
+}
+
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+    width: 100%;
+}
+
+.kpiImg {
+    position: relative;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.kpiImgTop {
+    float: left;
+}
+
+.kpiImgTopRight {
+    float: right;
+}
+
+.kpiImgMiddle {
+    display: inline-block;
+}
+
+.kpiImg a {
+    color: #0c0c0c;
+    text-decoration: none !important;
+}
+
+.hideKpiVertical {
+    word-break: keep-all;
+    position: absolute;
+    text-align: center;
+    z-index: 500;
+    width: 180px;
+}
+
+.hideKpi {
+    display: none;
+}
+
+.hideKpiHorizontal {
+    word-break: keep-all;
+    position: absolute;
+    text-align: center;
+    z-index: 500;
+    width: 280px;
+}
+
+.hideKpiVertical .hideKpiPercentage {
+    margin-left: -21px;
+}
+
+.hideKpiPercentage {
+    border-radius: 27px;
+    color: white;
+    margin: 5px 0;
+    background-color: #f07377;
+    width: 220px;
+    float: left;
+}
+
+.hideKpiPercentage p {
+    margin: 0;
+    line-height: 27px;
+}
+.hideKpiPercentage p span {
+    color:white;
+    padding-left: 5px;
+}
+.line_left_class {
+    margin-right: 5px;
+    margin-top: 25px;
+    float: left;
+}
+
+.line_right_class {
+    margin-left: 5px;
+    margin-top: 25px;
+}
+
+.processFrame {
+    margin: 0 auto;
+    width: 150px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #f07377;
+    color: white;
+}
+
+.border_color_change {
+    border-image: -webkit-linear-gradient(left, #ee7479, #8c5abd) 30 30;
+    border-image: -moz-linear-gradient(right, #ee7479, #8c5abd) 30 30;
+    border-image: linear-gradient(to right, #ee7479, #8c5abd) 30 30;
+    border-image: -o-linear-gradient(right, #ee7479, #8c5abd) 30 30;
+}
+
+
+.problem_symbol {
+    display: none;
+}
+.datetimepicker td, .datetimepicker th{
+    width: 31px;
+}
+
+.kpiDataImg img{
+    margin-left: 5px;
+}

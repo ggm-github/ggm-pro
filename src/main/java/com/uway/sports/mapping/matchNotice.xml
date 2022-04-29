@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.IMatchNoticeDao">
+
+    <resultMap  id="MatchNotice_ResultMap" type="com.uway.sports.web.entity.dbentity.MatchNotice" >
+        <result column="id" property="id"/>
+        <result column="sys_user_id" property="sysUserId"/>
+        <result column="match_id" property="matchId"/>
+        <result column="notice_title" property="noticeTitle"/>
+        <result column="notice_type" property="noticeType"/>
+        <result column="notice_type_status" property="noticeTypeStatus"/>
+        <result column="status" property="status"/>
+        <result column="remarks" property="remarks"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="updatetime" property="updatetime"/>
+    </resultMap>
+
+    <resultMap id="matchNoticeResult" type="com.uway.sports.web.entity.paraentity.MatchNoticeResult" extends="MatchNotice_ResultMap">
+        <result column="match_title" property="matchTitle"/>
+        <result column="ch_name" property="sysUserChName"/>
+    </resultMap>
+
+    <resultMap  id="NoticeTemplate_ResultMap" type="com.uway.sports.web.entity.dbentity.NoticeTemplate" >
+        <result column="id" property="id"/>
+        <result column="match_notice_id" property="matchNoticeId"/>
+        <result column="notice_type" property="noticeType"/>
+        <result column="title" property="title"/>
+        <result column="context" property="context"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="updatetime" property="updatetime"/>
+    </resultMap>
+
+    <sql id="matchNoticeWhere">
+	    <where>
+	        status in (0,1,2,3)
+            <if test="id != null">
+                AND id = #{id}
+	        </if>     
+            <if test="sysUserId != null">
+                AND sys_user_id = #{sysUserId}
+	        </if>     
+            <if test="matchId != null">
+                AND match_id = #{matchId}
+	        </if>
+            <if test="status != null">
+                AND status = #{status}
+	        </if>
+	        <if test="noticeTitle != null and noticeTitle != ''">
+                and notice_title like concat('%',#{noticeTitle},'%')
+            </if>
+        </where>
+    </sql>
+
+    <sql id="matchNoticeColumn">
+        id, sys_user_id, match_id, notice_title, notice_type, notice_type_status, status, remarks,
+        date_format(inserttime,'%Y-%m-%d %T') inserttime, updatetime
+    </sql>
+	 
+    <select id="getMatchNoticeList" parameterType="com.uway.sports.web.entity.paraentity.MatchNoticeTable" resultMap="matchNoticeResult">
+        select <include refid="matchNoticeColumn"/>,
+               (select m.match_title from match_news m where m.id = n.match_id) match_title,
+               (select u.ch_name from sys_user u where u.user_id = n.sys_user_id) ch_name,
+               (select u.ch_name from sys_user u where u.user_id = n.check_user_id) checkUserName
+	      from match_notice n
+	    <include refid="matchNoticeWhere"/>
+        <if test="orderBy != null and orderBy != ''">
+            order by ${orderBy}
+        </if>
+        <if test="rowStart != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </select>
+  
+    <select id="getMatchNoticeCnt" parameterType="com.uway.sports.web.entity.paraentity.MatchNoticeTable" resultType="int">
+      select count(1) from match_notice
+      <include refid="matchNoticeWhere"/>
+    </select>
+
+    <select id="getMatchNoticeById" parameterType="java.lang.Integer" resultMap="MatchNotice_ResultMap">
+      select <include refid="matchNoticeColumn"/>
+        from match_notice
+       where id = #{id}
+    </select>
+
+    <update id="updateMatchNoticeBy" parameterType="com.uway.sports.web.entity.dbentity.MatchNotice">
+       update match_notice
+       <set>
+            <if test="noticeType != null and noticeType != ''">notice_type = #{noticeType},</if>
+            <if test="noticeTypeStatus != null and noticeTypeStatus != ''">notice_type_status = #{noticeTypeStatus},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="checkUserId != null">check_user_id = #{checkUserId},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+            <if test="updatetime != null">updatetime = #{updatetime},</if>
+        </set>
+       where id = #{id}
+    </update>
+
+    <insert id="addMatchNoticeOperate" parameterType="com.uway.sports.web.entity.dbentity.MatchNoticeOperate" useGeneratedKeys="true" keyProperty="id">
+      insert into match_notice_operate
+             (match_notice_id, status, operate_userid, inserttime)
+      values (#{matchNoticeId}, #{status}, #{operateUserid}, now())
+    </insert>
+
+    <select id="getNoticeTemplateList" parameterType="com.uway.sports.web.entity.paraentity.NoticeTemplateRequest" resultMap="NoticeTemplate_ResultMap">
+        select id, match_notice_id, notice_type, title, context, inserttime, updatetime
+          from notice_template
+        <where>
+            <if test="matchNoticeId != null">
+                AND match_notice_id = #{matchNoticeId}
+            </if>
+            <if test="noticeTypeList != null and noticeTypeList.size > 0">
+                AND notice_type in
+                <foreach collection="noticeTypeList" open="(" separator="," close=")" item="item">
+                    #{item}
+                </foreach>
+
+            </if>
+        </where>
+    </select>
+
+</mapper>

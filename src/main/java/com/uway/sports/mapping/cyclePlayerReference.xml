@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.ICyclePlayerDao">
+
+    <resultMap  id="cyclePlayer_resultMap"  type="com.uway.sports.web.entity.dbentity.CyclePlayerReference" >
+        <result column="id" property="id"/>
+        <result column="reference_type" property="referenceType"/>
+        <result column="reference_id" property="referenceId"/>
+        <result column="name" property="name"/>
+        <result column="pic_url" property="picUrl"/>
+        <result column="reference_url" property="referenceUrl"/>
+        <result column="sort" property="sort"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="oper_tag" property="operTag"/>
+        <result column="oper_status" property="operStatus"/>
+        <result column="share_first_title" property="shareFirstTitle"/>
+        <result column="share_second_title" property="shareSecondTitle"/>
+        <result column="tag" property="tag"/>
+        <result column="show_index" property="showIndex" />
+        <result column="show_city" property="showCity" />
+        <result column="reference_desc" property="referenceDesc" />
+        <result column="show_sort" property="showSort" />
+    </resultMap>
+
+    <sql id="getTableWhere">
+        WHERE 1=1
+        <if test="referenceType != null">
+            AND r.reference_type = #{referenceType}
+        </if>
+        <if test="status != null">
+            AND r.`status` = #{status}
+        </if>
+        <if test="name != '' and name != null">
+            AND r.`name` LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="tag != '' and tag != null">
+            and r.`tag` like concat('%',#{tag},'%')
+        </if>
+    </sql>
+
+    <select id="getCyclePlayerTable" parameterType="com.uway.sports.web.entity.paraentity.CyclePlayerTable" resultMap="cyclePlayer_resultMap">
+        SELECT r.id,r.`name`,r.reference_type,r.reference_id,r.pic_url,r.reference_url,r.sort,r.tag,
+                r.`status`, DATE_FORMAT(r.create_time,'%Y-%m-%d') create_time,r.show_index,r.show_city,
+                r.reference_desc,r.show_sort,
+               (case when r.show_city = -1 then '全局' when r.show_city = 0 then '全国'
+                else (SELECT a.area_name FROM area a WHERE a.area_id = r.show_city AND a.status = 1) end) showCityName
+          FROM cycle_player_reference r
+         <include refid="getTableWhere" />
+         ORDER BY ${orderBy}
+          limit #{rowStart},#{pageSize}
+    </select>
+
+    <select id="getCyclePlayerTableCnt" parameterType="com.uway.sports.web.entity.paraentity.CyclePlayerTable" resultType="java.lang.Integer">
+        SELECT count(1)
+          FROM cycle_player_reference r
+         <include refid="getTableWhere" />
+    </select>
+
+    <select id="getCyclePlayerInfo" parameterType="java.lang.Integer" resultMap="cyclePlayer_resultMap">
+        SELECT r.id,r.reference_type,r.reference_id,r.`name`,r.pic_url,
+                r.reference_url,r.sort,r.`status`,r.oper_tag,r.oper_status,r.tag,
+                r.share_first_title,r.share_second_title,r.show_index,r.show_city,r.reference_desc,r.show_sort,
+                (SELECT a.area_name FROM area a WHERE a.area_id = r.show_city AND a.status = 1) showCityName
+          FROM cycle_player_reference r
+         WHERE r.id = #{id}
+    </select>
+
+    <delete id="updateCyclePlayerStatus" parameterType="java.util.HashMap">
+        UPDATE cycle_player_reference r SET r.`status` = #{statusParam}
+          <include refid="getTableWhere"></include>
+          <if test="id != null">
+           AND r.id = #{id}
+          </if>
+          <if test="ids != null and ids.length > 0">
+           AND r.id in
+              <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                  #{item}
+              </foreach>
+          </if>
+
+     </delete>
+
+     <insert id="addCyclePlayer" parameterType="com.uway.sports.web.entity.dbentity.CyclePlayerReference">
+          INSERT INTO `cycle_player_reference`
+                  (`reference_type`, `reference_id`, `name`, `pic_url`,
+                   `reference_url`, `sort`, `status`, `create_time`,`oper_tag`,`oper_status`,
+                   `share_first_title`,`share_second_title`,`tag`,`show_index`,`show_city`,`reference_desc`,`show_sort`)
+          VALUES (#{referenceType}, #{referenceId}, #{name}, #{picUrl},
+                   #{referenceUrl}, #{sort}, 1, NOW(),#{operTag},#{operStatus},
+                   #{shareFirstTitle},#{shareSecondTitle},#{tag},#{showIndex},#{showCity},#{referenceDesc},#{showSort})
+     </insert>
+
+     <update id="updateCyclePlayer" parameterType="com.uway.sports.web.entity.dbentity.CyclePlayerReference">
+         UPDATE `cycle_player_reference` r
+            SET  r.`reference_type`=#{referenceType}, r.`reference_id`=#{referenceId}, r.`name`=#{name},
+                 r.`pic_url`=#{picUrl}, r.`reference_url`=#{referenceUrl},
+                 r.`sort`=#{sort}, r.oper_tag = #{operTag},
+                 r.oper_status = #{operStatus},r.share_first_title = #{shareFirstTitle},
+                 r.share_second_title = #{shareSecondTitle},r.tag = #{tag},
+                 r.show_index = #{showIndex},r.show_city = #{showCity},r.reference_desc = #{referenceDesc},
+                 r.`show_sort` = #{showSort}
+          WHERE `id`=#{id}
+     </update>
+
+
+
+    <select id="getCyclePlayerList" parameterType="java.util.HashMap" resultMap="cyclePlayer_resultMap">
+        SELECT r.id,r.`name`,r.reference_type referenceType,r.pic_url picUrl,r.reference_url referenceUrl,
+                r.reference_id referenceId,r.show_sort,
+                r.sort, r.`status`, DATE_FORMAT(r.create_time,'%Y-%m-%d') createTime,
+                r.share_first_title,r.share_second_title,r.show_index,r.show_city,r.reference_desc
+          FROM cycle_player_reference r
+         WHERE 1=1
+        <if test="referenceTypes != null and referenceTypes.length > 0">
+           AND r.reference_type in
+            <foreach collection="referenceTypes" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="referenceType != null">
+           AND r.reference_type = #{referenceType}
+        </if>
+        <if test="referenceUrl != null">
+            AND r.reference_url = #{referenceUrl}
+        </if>
+        <if test="referenceId != null">
+           AND r.reference_id = #{referenceId}
+        </if>
+        <if test="status != null">
+           AND r.status = #{status}
+        </if>
+         ORDER BY r.sort DESC,r.create_time DESC
+    </select>
+
+</mapper>

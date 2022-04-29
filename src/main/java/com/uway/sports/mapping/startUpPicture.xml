@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IStartUpPictureDao">
+
+    <!--app启动图片查询-->
+    <resultMap id="startUpPicture_resultMap" type="com.uway.sports.web.entity.dbentity.StartUpPicture">
+        <result column="picture_id" property="pictureId"/>
+        <result column="picture_url" property="pictureUrl"/>
+        <result column="visit_url" property="visitUrl"/>
+        <result column="status" property="status"/>
+        <result column="picture_type" property="pictureType"/>
+        <result column="open_way" property="openWay"/>
+        <result column="create_time" property="createTime" />
+    </resultMap>
+    <sql id="startPicture_where">
+        <if test="status != null">
+            AND p.`status` = #{status}
+        </if>
+        <if test="pictureId != null">
+            AND p.pictureId = #{pictureId}
+        </if>
+        <if test="pictureType != null">
+            and p.picture_type = #{pictureType}
+        </if>
+        <if test="openWay != null">
+            and p.open_way = #{openWay}
+        </if>
+    </sql>
+    <select id="getStartUpPictureList" resultMap="startUpPicture_resultMap" parameterType="com.uway.sports.web.entity.paraentity.StartUpPictureRequest">
+        SELECT p.picture_id,p.picture_url,p.visit_url,p.status,p.picture_type,p.open_way,date_format(p.create_time,'%Y-%m-%d %T') create_time
+          FROM start_up_picture p
+         WHERE 1=1
+         <include refid="startPicture_where"/>
+         ORDER BY p.create_time DESC
+         <if test="rowStart!=null and pageSize !=null">
+         limit #{rowStart},#{pageSize}
+         </if>
+    </select>
+    <select id="getStartUpPictureListCnt" resultType="int" parameterType="com.uway.sports.web.entity.paraentity.StartUpPictureRequest">
+        SELECT count(1) cnt
+          FROM start_up_picture p
+        WHERE 1=1
+        <include refid="startPicture_where"/>
+    </select>
+
+    <select id="getStartUpPictureInfoById" resultMap="startUpPicture_resultMap" parameterType="java.lang.Integer">
+        SELECT p.picture_id,p.picture_url,p.visit_url,p.status,p.picture_type,p.open_way,p.remarks
+          FROM start_up_picture p
+         WHERE p.picture_id = #{id}
+    </select>
+
+    <update id="deleteStartUpPicByStatus" parameterType="com.uway.sports.web.entity.paraentity.StartUpPictureRequest">
+        UPDATE start_up_picture p SET p.status = 0
+        WHERE p.status = 1
+        <if test="pictureId != null">
+            AND p.picture_id = #{pictureId}
+        </if>
+        <if test="pictureType != null">
+            AND p.picture_type = #{pictureType}
+        </if>
+    </update>
+
+    <insert id="addStartUpPicture" parameterType="com.uway.sports.web.entity.dbentity.StartUpPicture">
+        INSERT INTO `start_up_picture`
+                (`picture_url`, `visit_url`, `status`, `create_time`,picture_type,open_way,remarks)
+        VALUES (#{pictureUrl}, #{visitUrl}, 1, NOW(), #{pictureType},#{openWay},#{remarks})
+    </insert>
+
+    <update id="updateStartUpPicInfo" parameterType="com.uway.sports.web.entity.dbentity.StartUpPicture">
+        UPDATE start_up_picture p
+        <set>
+            <if test="pictureUrl != null and pictureUrl != ''">picture_url = #{pictureUrl},</if>
+            <if test="visitUrl != null and visitUrl != ''">visit_url = #{visitUrl},</if>
+            <if test="openWay != null">open_way = #{openWay},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+        </set>
+        WHERE p.picture_id = #{pictureId}
+    </update>
+
+</mapper>

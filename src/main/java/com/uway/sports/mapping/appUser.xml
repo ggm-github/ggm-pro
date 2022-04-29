@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IAppUserDao">
+    <resultMap  id="User_ResultMap"  type="com.uway.sports.web.entity.dbentity.User" >
+        <result column="user_id" property="userId"/>
+        <result column="login_name" property="loginName"/>
+        <result column="password" property="password"/>
+        <result column="ch_name" property="chName"/>
+        <result column="photo_path" property="photoPath"/>
+        <result column="sex" property="sex"/>
+        <result column="mail" property="mail"/>
+        <result column="phone" property="phone"/>
+        <result column="birthday" property="birthday"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="quit_time" property="quitTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="tag" property="tag"/>
+        <result column="status" property="status"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="is_real" property="isReal"/>
+        <result column="real_name" property="realName"/>
+        <result column="card_no" property="cardNo"/>
+    </resultMap>
+
+    <resultMap  id="ExportUser_ResultMap"  type="com.uway.sports.web.entity.excel.UserExport" >
+        <result column="user_id" property="userId"/>
+        <result column="ch_name" property="chName"/>
+        <result column="sex" property="sex"/>
+        <result column="phone" property="phone"/>
+        <result column="bind_cards" property="bindCards"/>
+        <result column="createTime" property="createTime"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="terminal_type" property="terminalType"/>
+        <result column="insert_time" property="insertTime"/>
+        <result column="uchild" property="uchild"/>
+        <result column="indirect" property="indirect"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+
+    <resultMap  id="UserAttention_ResultMap" type="com.uway.sports.web.entity.dbentity.UserAttention" >
+        <result column="user_id" property="userId"/>
+        <result column="attention_user_id" property="attentionUserId"/>
+        <result column="is_attention" property="isAttention"/>
+        <result column="status" property="status"/>
+        <result column="inserttime" property="inserttime"/>
+    </resultMap>
+
+    <sql id="Where_Clause">
+        <where>
+            <if test="userId!=null">user_id=#{userId}</if>
+            <if test="loginName!=null and loginName!=''"> AND login_name like concat('%',#{loginName},'%')</if>
+            <if test="password!=null and password!=''"  >AND password=#{password}</if>
+            <if test="chName!=null and chName!=''">AND ch_name LIKE concat('%',#{chName},'%')</if>
+            <if test="photoPath!=null and photoPath!=''">AND photo_path=#{photoPath}</if>
+            <if test="sex!=null">AND sex = #{sex}</if>
+            <if test="mail!=null and mail!=''">AND mail LIKE concat('%',#{mail},'%')</if>
+            <if test="phone!=null and phone!=''">AND phone like concat('%',#{phone},'%')</if>
+            <if test="birthday!=null">AND birthday=#{birthday}</if>
+            <if test="loginTime!=null">AND login_time=#{loginTime}</if>
+            <if test="quitTime!=null">AND quit_time=#{quitTime}</if>
+            <if test="createTime!=null">AND create_time=#{createTime}</if>
+            <if test="tag!=null">AND tag=#{tag}</if>
+            <if test="status!=null">AND status=#{status}</if>
+            <if test="isReal!=null">AND is_real=#{isReal}</if>
+            <if test="startDate!=null and startDate!=''">AND create_time &gt;= #{startDate}</if>
+            <if test="endDate!=null and endDate!=''">AND create_time &lt;= #{endDate}</if>
+            <if test="idList != null and idList.size > 0">
+                and u.user_id in
+                <foreach collection="idList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="teamId != null">
+                and EXISTS (SELECT 1 FROM team_member tm WHERE tm.team_member_id = u.user_id
+                               AND tm.team_id = #{teamId} AND tm.status = 1)
+            </if>
+        </where>
+    </sql>
+    <select id="getListByUser" parameterType="com.uway.sports.web.entity.dbentity.User" resultMap="User_ResultMap">
+        SELECT * from `user` u
+        <include refid="Where_Clause"/>
+        <if test="rowStart!=null and pageSize !=null">
+            order by ${orderBy}
+            LIMIT #{rowStart},#{pageSize}
+        </if>
+    </select>
+    <select id="getBindCardListByUser" parameterType="com.uway.sports.web.entity.dbentity.User" resultMap="User_ResultMap">
+        SELECT u.*
+          FROM `user` u
+        <include refid="Where_Clause"/>
+        <if test="rowStart!=null and pageSize !=null">
+            order by ${orderBy}
+            LIMIT #{rowStart},#{pageSize}
+        </if>
+    </select>
+    <select id="getListCountByUser" parameterType="com.uway.sports.web.entity.dbentity.User" resultType="java.lang.Long">
+        SELECT count(*) from `user` u
+        <include refid="Where_Clause"/>
+    </select>
+    <select id="getUserById" parameterType="java.lang.Long" resultMap="User_ResultMap">
+        SELECT * from `user` WHERE user_id=#{userId}
+    </select>
+    <update id="updateUserById" parameterType="com.uway.sports.web.entity.dbentity.User">
+        UPDATE `user`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="loginName!=null">login_name=#{loginName},</if>
+            <if test="password!=null">password=#{password},</if>
+            <if test="chName!=null">ch_name=#{chName},</if>
+            <if test="photoPath!=null">photo_path=#{photoPath},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="mail!=null">mail=#{mail},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="birthday!=null">birthday=#{birthday},</if>
+            <if test="loginTime!=null">login_time=#{loginTime},</if>
+            <if test="quitTime!=null">quit_time=#{quitTime},</if>
+            <if test="createTime!=null">create_time=#{createTime},</if>
+            <if test="tag!=null">tag=#{tag},</if>
+            <if test="status!=null">status=#{status},</if>
+        </trim>
+        WHERE user_id=#{userId}
+    </update>
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId" parameterType="com.uway.sports.web.entity.dbentity.User">
+        INSERT INTO `user` (login_name,password,ch_name,photo_path,sex,mail,phone,birthday,login_time,quit_time,create_time,`status`)
+        VALUES (#{loginName},#{password},#{chName},#{photoPath},#{sex},#{mail},#{phone},#{birthday},#{loginTime},#{quitTime},#{createTime},#{status})
+    </insert>
+    <insert id="addAppLog" parameterType="list">
+        insert into  sys_log
+        (
+        user_id,
+        login_name,
+        operate_time,
+        operate_name,
+        method,
+        request_url,
+        params,
+        terminal_type,
+        operate_ip,
+        useragent
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.userId},
+            #{item.loginName},
+            #{item.operateTime},
+            #{item.operateName},
+            #{item.method},
+            #{item.requestUrl},
+            #{item.params},
+            #{item.terminalType},
+            #{item.operateIp},
+            #{item.userAgent}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAllurlMenu" resultType="com.uway.sports.web.entity.dbentity.UrlMenu">
+        select id,url,url_name,status from url_menu
+    </select>
+    <resultMap id="FeedbackResultMap" type="com.uway.sports.web.entity.dbentity.FeedBack">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="content" property="content"/>
+        <result column="response_message" property="responseMessage"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_time" property="createTimeStr"/>
+        <result column="status" property="status"/>
+        <result column="version_code" property="versionCode"/>
+    </resultMap>
+    <sql id="select_clause_feedback">
+        id,user_id,content,response_message,DATE_FORMAT(create_time,'%Y-%m-%d %T') as create_time,status,version_code,client_pic clientPic
+    </sql>
+    <sql id="where_clause_feedback">
+        <where>
+            <if test="startTime!=null and startTime!=''">create_time &gt;= #{startTime}</if>
+            <if test="endTime!=null and endTime!=''">AND create_time &lt; #{endTime}</if>
+        </where>
+    </sql>
+    <sql id="order_limit_clause_feedback">
+        order by ${orderBy}
+          limit #{rowStart},#{pageSize}
+    </sql>
+    <select id="getFeedbackCount" resultType="long" parameterType="com.uway.sports.web.entity.paraentity.TimeTable">
+        SELECT count(id) from feed_back
+        <include refid="where_clause_feedback"></include>
+    </select>
+    <select id="getFeedbackTable" resultMap="FeedbackResultMap" parameterType="com.uway.sports.web.entity.paraentity.TimeTable">
+        select <include refid="select_clause_feedback"/>
+        FROM feed_back
+        <include refid="where_clause_feedback"></include>
+        <include refid="order_limit_clause_feedback"/>
+    </select>
+    <select id="getFeedbackById" resultMap="FeedbackResultMap" parameterType="long">
+        select <include refid="select_clause_feedback"/>
+        FROM feed_back where id = #{id}
+    </select>
+    <select id="getUserMaxId" resultType="java.lang.Integer">
+        SELECT MAX(u.user_id) FROM `user` u
+    </select>
+
+    <select id="exportUserList" parameterType="com.uway.sports.web.entity.dbentity.UserPost" resultMap="ExportUser_ResultMap">
+        SELECT u.user_id, u.ch_name,
+        (case u.sex when 0 then '女' when 1 then '男' else '' end) sex,
+        <if test="phoneRightStatus == 1">
+            u.phone,
+        </if>
+        u.parent_id,
+        date_format(u.login_time,'%Y-%m-%d %H:%i:%S') login_time,
+        date_format(u.create_time,'%Y-%m-%d %H:%i:%S') createTime,
+        date_format(u.insert_time,'%Y-%m-%d %H:%i:%S') insertTime
+        FROM `user` u
+        <where>
+            1=1
+            <if test="userId!=null">AND u.user_id=#{userId}</if>
+            <if test="loginName!=null and loginName!=''"> AND u.login_name=#{loginName}</if>
+            <if test="password!=null and password!=''"  >AND u.password=#{password}</if>
+            <if test="chName!=null and chName!=''">AND u.ch_name=#{chName}</if>
+            <if test="photoPath!=null and photoPath!=''">AND u.photo_path=#{photoPath}</if>
+            <if test="sex!=null">AND u.sex=#{sex}</if>
+            <if test="mail!=null and mail!=''">AND u.mail=#{mail}</if>
+            <if test="phone!=null and phone!=''">AND u.phone=#{phone}</if>
+            <if test="birthday!=null">AND u.birthday=#{birthday}</if>
+            <if test="loginTime!=null">AND u.login_time=#{loginTime}</if>
+            <if test="quitTime!=null">AND u.quit_time=#{quitTime}</if>
+            <if test="createTime!=null">AND u.create_time=#{createTime}</if>
+            <if test="tag!=null">
+                <if test="tag == 0">AND u.phone is null  or u.phone = ''</if>
+                <if test="tag == 1">AND u.phone is not null  and u.phone != ''</if>
+            </if>
+            <if test="isReal != null">AND u.is_real = #{isReal}</if>
+            <if test="status!=null">AND u.status=#{status}</if>
+            <if test="startDate!=null and startDate!=''">AND u.create_time &gt;= #{startDate}</if>
+            <if test="endDate!=null and endDate!=''">AND u.create_time &lt; date_format(#{endDate},'%Y-%m-%d')</if>
+            <if test="parentId!=null">AND u.parent_id=#{parentId}</if>
+            GROUP BY u.`user_id`
+        </where>
+    </select>
+
+    <select id="getUserAttentionList" parameterType="com.uway.sports.web.entity.dbentity.UserAttention" resultMap="UserAttention_ResultMap">
+        SELECT ua.user_id,ua.attention_user_id,ua.is_attention,ua.status,ua.inserttime
+          FROM user_attention ua
+         WHERE 1=1
+        <if test="status != null">
+            and ua.`status` = #{status}
+        </if>
+        <if test="userId != null">
+            and ua.user_id = #{userId}
+        </if>
+        <if test="attentionUserId != null">
+            and ua.attention_user_id = #{attentionUserId}
+        </if>
+        <if test="isAttention != null">
+            and ua.is_attention = #{isAttention}
+        </if>
+    </select>
+
+    <update id="updateUserAttention" parameterType="com.uway.sports.web.entity.dbentity.UserAttention">
+        update user_attention set status = #{status}
+         where 1=1
+        <if test="userId != null">
+           and ua.user_id = #{userId} </if>
+        <if test="attentionUserId != null">
+           and ua.attention_user_id = #{attentionUserId}
+        </if>
+        <if test="userId == null and attentionUserId == null">
+           and 1=2
+        </if>
+    </update>
+
+    <select id="getUserAttentionForNotice" parameterType="com.uway.sports.web.entity.paraentity.NoticeTaskRequest" resultType="com.uway.sports.web.entity.paraentity.NoticeTaskResult">
+        SELECT ua.attention_user_id mainUserId,count(ua.user_id) cnt,
+               GROUP_CONCAT(ua.user_id ORDER BY ua.inserttime DESC) cntIdStr
+          FROM user_attention ua
+         WHERE ua.status = 1 AND ua.is_attention = 1
+         <![CDATA[
+           and ua.inserttime > #{startDate}
+           and ua.inserttime <= #{endDate}
+         ]]>
+         GROUP BY ua.attention_user_id
+    </select>
+
+    <select id="getUserClickGoodForNotice" parameterType="com.uway.sports.web.entity.paraentity.NoticeTaskRequest" resultType="com.uway.sports.web.entity.paraentity.NoticeTaskResult">
+        SELECT tv.id mainId,tv.oper_user_id mainUserId,count(cg.user_id) cnt,
+               GROUP_CONCAT(cg.user_id ORDER BY cg.inserttime DESC) cntIdStr
+          FROM team_video tv,user_click_good cg
+         WHERE cg.status = 1 AND tv.`status` = 1 AND tv.check_status in (-1,0,1)
+           AND cg.user_id != tv.oper_user_id AND cg.moments_id = tv.id
+           AND tv.oper_user_id is not null AND cg.user_id is not null AND cg.user_id != -1
+           <![CDATA[
+           AND cg.inserttime > #{startDate} AND cg.inserttime <= #{endDate}
+           ]]>
+        GROUP BY tv.id,tv.oper_user_id
+        ORDER BY tv.id DESC
+    </select>
+
+    <select id="getUserMomentsForNotice" parameterType="com.uway.sports.web.entity.paraentity.NoticeTaskRequest" resultType="com.uway.sports.web.entity.paraentity.NoticeTaskResult">
+        SELECT tv.oper_user_id mainUserId,count(tv.id) cnt,max(tv.inserttime) inserttime,
+               GROUP_CONCAT(tv.id ORDER BY tv.inserttime DESC) cntIdStr
+          FROM team_video tv
+         WHERE tv.status = 1 and tv.video_type in (1,2) AND tv.oper_user_id is not null AND tv.check_status in (-1,0,1)
+        <![CDATA[
+          and tv.inserttime > #{startDate} AND tv.inserttime <= #{endDate}
+        ]]>
+          AND EXISTS (SELECT 1 FROM `user` u WHERE u.user_id = tv.oper_user_id AND u.status = 1)
+        GROUP BY tv.oper_user_id
+        order by inserttime desc
+    </select>
+
+</mapper>

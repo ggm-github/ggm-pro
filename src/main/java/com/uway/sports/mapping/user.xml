@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.ISysUserDao">
+    <resultMap  id="SysUser_ResultMap"  type="com.uway.sports.web.entity.dbentity.SysUser" >
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="ch_name" property="chName"/>
+        <result column="mail" property="mail"/>
+        <result column="phone" property="phone"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="quit_time" property="quitTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="role_id" property="roleId"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <resultMap  id="SysRole_ResultMap"  type="com.uway.sports.web.entity.dbentity.SysRole" >
+        <result column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="role_detail" property="roleDetail"/>
+        <result column="role_bak" property="roleBak"/>
+    </resultMap>
+
+    <resultMap  id="SysMenu_ResultMap"  type="com.uway.sports.web.entity.dbentity.SysMenu" >
+        <result column="m_id" property="mId"/>
+        <result column="m_name" property="mName"/>
+        <result column="m_groupid" property="mGroupid"/>
+        <result column="m_group" property="mGroup"/>
+        <result column="m_path" property="mPath"/>
+        <result column="m_sort" property="mSort"/>
+        <result column="m_status" property="mStatus"/>
+        <result column="m_parentid" property="mParentId"/>
+    </resultMap>
+    <resultMap id="Log_ResultMap" type="com.uway.sports.web.entity.dbentity.SysLog">
+        <result column="id" property="id"></result>
+        <result column="user_id" property="userId"></result>
+        <result column="login_name" property="loginName"></result>
+        <result column="operate_time" property="operateTime"></result>
+        <result column="operate_name" property="operateName"></result>
+        <result column="method" property="method"></result>
+        <result column="request_url" property="requestUrl"></result>
+        <result column="params" property="params"></result>
+        <result column="terminal_type" property="terminalType"></result>
+        <result column="operate_ip" property="operateIp"></result>
+        <result column="useragent" property="userAgent"></result>
+    </resultMap>
+
+    <sql id="limitSql">
+        <if test="rowStart!=null and pageSize !=null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </sql>
+    <sql id="orderBySql">
+        <if test="orderBy!=null and orderBy !=''">
+            order by ${orderBy}
+        </if>
+    </sql>
+
+
+    <sql id="all_columns">
+        user_id, user_name, password, ch_name, mail, phone,date_format(login_time,'%Y-%m-%d') login_time, date_format(quit_time,'%Y-%m-%d') quit_time,date_format(create_time,'%Y-%m-%d') create_time, role_id, status
+    </sql>
+
+    <sql id="role_sql">
+        role_id, role_name, role_detail,role_bak
+    </sql>
+    <sql id="sql_column_log">
+        id,user_id,login_name,operate_time,operate_name,method,request_url,params,terminal_type,operate_ip,useragent
+    </sql>
+    <sql id="sql_where_log">
+        where 1=1
+        <if test="userId != null">
+            AND user_id = #{userId}
+        </if>
+        <if test="terminalType != null and terminalType !=''">
+            AND terminal_type = #{terminalType}
+        </if>
+        <if test="startTime != null and startTime !=''">
+            AND operate_time >= #{startTime,jdbcType=DATE}
+        </if>
+        <if test="endTime != null and endTime !=''">
+            <![CDATA[AND operate_time < #{endTime,jdbcType=DATE}]]>
+        </if>
+    </sql>
+
+    <select id="getUserbyName" parameterType="String" resultMap="SysUser_ResultMap">
+       select
+        <include refid="all_columns"></include>
+	  from   sys_user
+        WHERE user_name=#{value}
+    </select>
+
+    <select id="getUserbyId" parameterType="java.lang.Integer" resultMap="SysUser_ResultMap">
+        select
+        <include refid="all_columns"></include>
+        from   sys_user
+        WHERE user_id=${value}
+    </select>
+
+    <select id="getRolebyId" parameterType="java.lang.Integer" resultMap="SysRole_ResultMap">
+        select
+        <include refid="role_sql"></include>
+        from   sys_role
+        WHERE role_id=${value}
+    </select>
+
+    <select id="getAllRole"  resultMap="SysRole_ResultMap">
+        select
+        <include refid="role_sql"></include>
+        from sys_role
+    </select>
+
+    <select id="getmenuList" parameterType="java.util.ArrayList" resultMap="SysMenu_ResultMap">
+        select
+        m_id, m_name, m_groupid,m_group,m_path,m_sort,m_status
+        from   sys_menu
+        <where>
+            m_id in (
+            <foreach item="menuId" index="index" collection="list" separator=","> #{menuId} </foreach>
+            )
+            AND (m_parentid is null or m_parentid = 0)
+        </where>
+        order by m_groupid asc,m_sort asc
+    </select>
+
+    <select id="getUserPage" resultMap="SysUser_ResultMap" parameterType="com.uway.sports.web.entity.TableEntity">
+        select
+        <include refid="all_columns"></include>
+        from sys_user
+        <include refid="orderBySql" />
+        <include refid="limitSql" />
+    </select>
+
+    <select id="getUserTotal" resultType="java.lang.Integer" parameterType="com.uway.sports.web.entity.TableEntity">
+        select count(*) from sys_user
+        <if test="searchValue != null and searchValue != ''" >
+            WHERE name like '%${searchValue}%'
+            or login_name like '%${searchValue}%'
+        </if>
+    </select>
+
+    <update id="updateUser" parameterType="com.uway.sports.web.entity.dbentity.SysUser">
+        update sys_user
+        set
+        ch_name=#{chName},
+        mail=#{mail},
+        phone=#{phone},
+        role_id=${roleId},
+        status=${status}
+        where user_id=${userId}
+    </update>
+
+    <update id="updatePasswordById" parameterType="com.uway.sports.web.entity.dbentity.SysUser">
+        UPDATE sys_user
+        SET
+        password = #{password}
+        WHERE user_id=${userId}
+    </update>
+
+    <select id="getAllmenuList" resultMap="SysMenu_ResultMap">
+        select
+        m_id, m_name, m_groupid,m_group,m_path,m_sort,m_status,m_parentid
+        from   sys_menu
+        <where>
+            m_status = 1
+        </where>
+        order by m_groupid asc,m_sort asc
+    </select>
+
+    <insert id="addRole" parameterType="com.uway.sports.web.entity.dbentity.SysRole">
+        insert into sys_role
+        (role_name, role_detail,role_bak)
+        VALUES
+        (#{roleName},#{roleDetail},#{roleBak})
+    </insert>
+
+    <update id="editRole" parameterType="com.uway.sports.web.entity.dbentity.SysRole">
+        update sys_role
+        set
+        role_name = #{roleName},
+        role_detail = #{roleDetail},
+        role_bak = #{roleBak}
+        where role_id = ${roleId}
+    </update>
+
+    <delete id="deleteRoleById" parameterType="java.lang.Integer">
+        delete from sys_role where role_id = ${value}
+    </delete>
+
+    <insert id="addUser" parameterType="com.uway.sports.web.entity.dbentity.SysUser">
+        insert into sys_user
+        (user_name, password,ch_name,mail,phone,role_id,status,create_time)
+        VALUES
+        (#{userName},#{password},#{chName},#{mail},#{phone},${roleId},${status},#{createTime})
+
+    </insert>
+
+
+    <select id="getLogTotal" parameterType="com.uway.sports.web.entity.paraentity.LogTable" resultType="long">
+        select count(1) from sys_log <include refid="sql_where_log"/>
+    </select>
+    <select id="getLogList" parameterType="com.uway.sports.web.entity.paraentity.LogTable" resultMap="Log_ResultMap">
+      select <include refid="sql_column_log"/> FROM sys_log
+        <include refid="sql_where_log"/>
+        <include refid="orderBySql"/>
+        <include refid="limitSql"/>
+    </select>
+
+    <insert id="addsysUserLog" parameterType="com.uway.sports.web.entity.dbentity.SysLog">
+        insert into  sys_user_log
+        (
+        user_id,
+        login_name,
+        operate_time,
+        operate_name,
+        method,
+        request_url,
+        params,
+        terminal_type,
+        operate_ip,
+        useragent
+        )
+        VALUES
+            (
+            #{userId},
+            #{loginName},
+            #{operateTime},
+            #{operateName},
+            #{method},
+            #{requestUrl},
+            #{params},
+            #{terminalType},
+            #{operateIp},
+            #{userAgent}
+            )
+    </insert>
+
+
+    <select id="getsysUserLogTotal" parameterType="com.uway.sports.web.entity.paraentity.LogTable" resultType="long">
+        select count(1) from sys_user_log <include refid="sql_where_log"/>
+    </select>
+    <select id="getsysUserLogList" parameterType="com.uway.sports.web.entity.paraentity.LogTable" resultMap="Log_ResultMap">
+        select <include refid="sql_column_log"/> FROM sys_user_log
+        <include refid="sql_where_log"/>
+        <include refid="orderBySql"/>
+        <include refid="limitSql"/>
+    </select>
+
+    <select id="getmenuListBy" parameterType="com.uway.sports.web.entity.dbentity.SysMenu" resultMap="SysMenu_ResultMap">
+        select m_id, m_name, m_groupid,m_group,m_path,m_sort,m_status
+        from sys_menu
+        WHERE 1=1
+        <if test="mId != null">
+            AND m_id = #{mId}
+        </if>
+        <if test="mPath != null and mPath != ''">
+            AND m_path = #{mPath}
+        </if>
+        <if test="mStatus != null">
+            AND m_status = #{mStatus}
+        </if>
+    </select>
+
+    <select id="getMenuGroup" resultMap="SysMenu_ResultMap">
+        SELECT DISTINCT m_groupid,m_group
+          FROM sys_menu WHERE m_status = 1 ORDER BY m_groupid
+    </select>
+</mapper>

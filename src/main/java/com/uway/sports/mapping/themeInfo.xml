@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.IThemeInfoDao">
+
+    <resultMap  id="ThemeInfo_ResultMap" type="com.uway.sports.web.entity.dbentity.ThemeInfo" >
+        <result column="id" property="id"/>
+        <result column="match_id" property="matchId"/>
+        <result column="theme_type" property="themeType"/>
+        <result column="theme_title" property="themeTitle"/>
+        <result column="theme_remark" property="themeRemark"/>
+        <result column="theme_imgurl" property="themeImgurl"/>
+        <result column="read_cnt" property="readCnt"/>
+        <result column="moments_cnt" property="momentsCnt"/>
+        <result column="sort" property="sort"/>
+        <result column="status" property="status"/>
+        <result column="user_id" property="userId"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="notice_type" property="noticeType"/>
+        <result column="notice_image" property="noticeImage"/>
+        <result column="notice_text" property="noticeText"/>
+        <result column="notice_open_way" property="noticeOpenWay"/>
+        <result column="notice_open_data" property="noticeOpenData"/>
+    </resultMap>
+
+    <resultMap id="themeInfoResult" type="com.uway.sports.web.entity.paraentity.ThemeInfoResult" extends="ThemeInfo_ResultMap">
+        <result column="ch_name" property="chName" />
+    </resultMap>
+
+    <resultMap id="themeMomentsRel" type="com.uway.sports.web.entity.dbentity.ThemeMomentsRel">
+        <result column="theme_id" property="themeId" />
+        <result column="video_id" property="videoId" />
+    </resultMap>
+
+    <sql id="themeWhere_sql">
+	    <where>
+            <if test="id != null">
+                AND id = #{id}
+	        </if>     
+            <if test="matchId != null">
+                AND match_id = #{matchId}
+	        </if>
+            <if test="themeType != null">
+                AND theme_type = #{themeType}
+	        </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="themeTitle != null and themeTitle != ''">
+                AND theme_title like concat('%',#{themeTitle},'%')
+            </if>
+        </where>
+    </sql>
+
+    <sql id="themeColumn">
+        t.id, t.match_id, t.theme_type, t.theme_title, t.theme_remark, t.theme_imgurl, t.read_cnt,
+        t.moments_cnt, t.sort, t.status, t.user_id, t.inserttime,
+        t.`notice_type`,t.`notice_image`,t.`notice_text`,t.`notice_open_way`,t.`notice_open_data`
+    </sql>
+	 
+    <select id="getThemeInfoList" parameterType="com.uway.sports.web.entity.paraentity.ThemeInfoTable" resultMap="themeInfoResult">
+        select <include refid="themeColumn"/>
+	      from theme_info t
+	    <include refid="themeWhere_sql"/>
+	    <if test="orderBy != null and orderBy != ''">
+            order by ${orderBy}
+        </if>
+        <if test="rowStart != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getThemeInfoById" parameterType="java.lang.Integer" resultMap="themeInfoResult">
+        select <include refid="themeColumn"/>
+          from theme_info t
+         where id = #{id}
+    </select>
+
+    <select id="getThemeInfoCnt" parameterType="com.uway.sports.web.entity.paraentity.ThemeInfoTable" resultType="int">
+        select count(1) cnt
+          from theme_info t
+        <include refid="themeWhere_sql"/>
+    </select>
+
+    <update id="updateThemeInfo" parameterType="com.uway.sports.web.entity.dbentity.ThemeInfo">
+        update theme_info
+           set update_user_id = IFNULL(#{updateUserId},update_user_id),
+               match_id = #{matchId},theme_type = IFNULL(#{themeType},theme_type),
+               theme_title = IFNULL(#{themeTitle},theme_title),
+               theme_remark = IFNULL(#{themeRemark},theme_remark),
+               theme_imgurl = IFNULL(#{themeImgurl},theme_imgurl),sort = IFNULL(#{sort},0),
+               user_id = IFNULL(#{userId},user_id),notice_type = IFNULL(#{noticeType},0),
+               `notice_image` = #{noticeImage},
+               notice_text = #{noticeText},`notice_open_way` = #{noticeOpenWay},
+               `notice_open_data` = #{noticeOpenData}
+        where id = #{id}
+    </update>
+
+    <update id="updateThemeInfoBy" parameterType="com.uway.sports.web.entity.dbentity.ThemeInfo">
+        update theme_info
+        <set>
+            <if test="id != null">id = #{id},</if>
+            <if test="matchId != null">match_id = #{matchId},</if>
+            <if test="themeType != null">theme_type = #{themeType},</if>
+            <if test="themeTitle != null and themeTitle != ''">theme_title = #{themeTitle},</if>
+            <if test="themeRemark != null and themeRemark != ''">theme_remark = #{themeRemark},</if>
+            <if test="themeImgurl != null and themeImgurl != ''">theme_imgurl = #{themeImgurl},</if>
+            <if test="readCnt != null and readCnt != ''">read_cnt = #{readCnt},</if>
+            <if test="momentsCnt != null">moments_cnt = #{momentsCnt},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="updateUserId != null">update_user_id = #{updateUserId},</if>
+        </set>
+         where id = #{id}
+    </update>
+
+    <insert id="addThemeInfo" parameterType="com.uway.sports.web.entity.dbentity.ThemeInfo" useGeneratedKeys="true" keyProperty="id">
+      insert into theme_info
+             (match_id, theme_type, theme_title, theme_remark, theme_imgurl, read_cnt,
+              moments_cnt, sort, status, user_id, inserttime,update_user_id,
+              `notice_type`,`notice_image`,`notice_text`,`notice_open_way`,`notice_open_data`)
+      values (#{matchId}, #{themeType}, #{themeTitle}, #{themeRemark}, #{themeImgurl},0,
+              0, #{sort}, 1, #{userId}, now(),#{updateUserId},
+              #{noticeType},#{noticeImage},#{noticeText},#{noticeOpenWay},#{noticeOpenData})
+    </insert>
+
+    <update id="updateThemeMomentsCnt">
+        update theme_info set moments_cnt = moments_cnt + #{num}
+         where id = #{id}
+    </update>
+
+    <select id="getThemeMomentsRelList" parameterType="com.uway.sports.web.entity.dbentity.ThemeMomentsRel" resultMap="themeMomentsRel">
+        select id,theme_id,video_id,status
+          from theme_moments_rel tmr
+         <where>
+             <if test="themeId != null">
+                 and theme_id = #{themeId}
+             </if>
+             <if test="videoId != null">
+                 and video_id = #{videoId}
+             </if>
+             <if test="status != null">
+                 and status = #{status}
+             </if>
+         </where>
+
+    </select>
+
+    <update id="updateThemeMomentsRel" parameterType="com.uway.sports.web.entity.dbentity.ThemeMomentsRel">
+        update theme_moments_rel
+        <set>
+            <if test="themeId != null">theme_id = #{themeId},</if>
+            <if test="videoId != null">video_id = #{videoId},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="addThemeMomentsRel" parameterType="com.uway.sports.web.entity.dbentity.ThemeMomentsRel">
+        insert into theme_moments_rel
+               (theme_id,video_id,status)
+        values (#{themeId},#{videoId},#{status})
+    </insert>
+
+</mapper>

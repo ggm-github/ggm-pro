@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>帮TA拉票</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="shortcut icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <style>
+        .main-div{
+            margin:0rem;
+            background-image:url(./img/invitation/inv_bg.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 130%;
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+        }
+
+        .inv_header {
+            background-image: url(./img/invitation/inv1.png);
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            -moz-background-size: 100% 100%;
+            width: 80%;
+            text-align: center;
+            margin-top: 50px;
+            height: 60px;
+            margin-left: 10%;
+        }
+
+        .head-div{
+            margin:0rem;
+            background-image:url(./img/invitation/inv2_bg.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            width: 80%;
+            height: 328px;
+            margin-left: 10%;
+        }
+        .invite-info{
+            margin-left: 5%;
+            margin-right: 5%;
+            /*background-color: #ffffff;*/
+            width:90%;
+            height:12rem;
+            border-radius: 5px;
+        }
+
+        .info-title p{
+            text-align: center;
+            margin-top: 5rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .invite-input{
+            width: 80%;
+            height: 50px;
+            font-family: PingFangSC-Light;
+            padding: 0rem 5%;
+            /*background-color: #ffffff;*/
+            outline:none;
+            border-left: none;
+            border-top: none;
+            border-right: none;
+            border-bottom: solid 0.2px #ccc;
+            margin-left: 22px;
+            font-size: 17px;
+            padding-left: 20px;
+        }
+
+        .checkno-btn{
+            position: absolute;
+            padding: 0rem 0.5rem;
+            right: 0%;
+            top: -0.1rem;
+            text-align: center;
+            color: #fdbe4e;
+            font-family: PingFangSC-Light;
+            border-left: 2px solid #fdbe4e;
+        }
+
+        .submit-btn{
+            background-image:url(./img/invitation/tp_bg.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            width: 100%;
+            height: 40px;
+            font-size: 22px;
+            font-family: PingFangSC-Light;
+            color: #ffffff;
+            border-radius: 20px;
+            background-color: #facc5a;
+            outline:none;
+            border: 0px;
+            -webkit-appearance: none;
+            font-weight:bold;
+        }
+
+        .head-div-img {
+            width: 11px;
+            position: absolute;
+            top: 13px;
+            left: 22px;
+            margin-right: 3px;
+        }
+        .head-div-img1 {
+            width: 11px;
+            position: absolute;
+            top: 13px;
+            left: 18px;
+            margin-right: 3px;
+        }
+        .head-divbg{
+            /*background-image:url(./img/invitation/inv2.png);*/
+            /*background-repeat:no-repeat;*/
+            /*background-size:100% 100%;*/
+            /*-moz-background-size:100% 100%;*/
+            height: 100%;
+            width: 100%;
+            height: 60%;
+            /*margin-top: 45px;*/
+            padding-top: 80px;
+        }
+        .head-divbg .invtext{
+            background-image:url(./img/invitation/invtext_bg.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 100%;
+            width: 100%;
+            height: 23%;
+        }
+        .invtextspan{
+            width: 100%;
+            font-size: 15px;
+            font-color:#999999;
+            font-family: PingFangSC-Light;
+            margin-left: 3px;
+            margin-top: 3px;
+            margin-right: 3px;
+            position: relative;
+        }
+
+        input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+            color: #666;
+            font-size: 14px;
+            margin-left: 45px;
+        }
+
+        input:-moz-placeholder, textarea:-moz-placeholder {
+            color: #666;
+            font-size: 14px;
+            margin-left: 45px;
+        }
+
+        input::-moz-placeholder, textarea::-moz-placeholder {
+            color: #666;
+            font-size: 14px;
+            margin-left: 45px;
+        }
+
+        input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+            color: #666;
+            font-size: 14px;
+            margin-left: 45px;
+        }
+
+        .teamdiv{
+            vertical-align: middle;
+            height: 80px;
+            text-align: center;
+        }
+
+        .teamdiv .teamtext{
+            display: inline-block;
+            vertical-align: middle;
+            color: #ffffff;
+            font-size: 20px;
+            font-family: PingFangSC-Light;
+            font-weight:bold;
+            margin-top: 5px;
+        }
+        .teamdiv .teamname{
+            width: 100%;
+            text-align:center;
+            font-size: 20px;
+            font-weight:bold;
+            margin-top: 5px;
+        }
+
+        .teamdiv .teamno{
+            width: 100%;
+            text-align:center;
+            font-size: 17px;
+            font-family: PingFangSC-Regular;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+        .footdiv{
+            width: 100%;
+            text-align:center;
+            font-size: 15px;
+            font-family: PingFangSC-Regular;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .cover{
+            position: absolute;
+            left: 0;
+            top:0;
+            width:100%;
+            height: 130%;
+            display: none;
+            background: rgba(0,0,0,.8);
+            text-align: center;
+            z-index: 999999;
+        }
+        .votebtdiv{
+            width:80%;
+            margin-left:10%;
+            margin-top: 15px;
+        }
+
+        .votesuccessbtdiv{
+            text-align: center;
+            width:90%;
+            margin-top: 10px;
+            font-family: PingFangSC-Regular;
+            color: #FEC35E;
+            font-size: 20px;
+        }
+        .imgdivparent{
+            text-align: center;
+            top: 140px;
+            position: absolute;
+            width: 100%;
+        }
+        .imgdivchild{
+            width: 80px;
+            height: 80px;
+            border-radius: 160px;
+            background-color: #5362e3;
+            padding: 5px;
+            margin: 0 auto;
+        }
+
+        .arrow{
+            margin:0rem;
+            background-image:url(./img/invitation/wxgz.png);
+            background-repeat:no-repeat;
+            background-size:90% 100%;
+            -moz-background-size:90% 100%;
+            height: 430px;
+            width: 90%;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            margin-left: 10%;
+            margin-top: 30%;
+        }
+        .wxtext1{
+            text-align: center;
+            font-size: 17px;
+            font-family: PingFangSC-Regular;
+            color: #333333;
+            width: 70%;
+            margin-top: 70px;
+            margin-left: 10%;
+        }
+        .wxtext11{
+            text-align: center;
+            font-size: 17px;
+            font-family: PingFangSC-Regular;
+            color: #333333;
+            width: 70%;
+            margin-left: 9%;
+            margin-top: 2px;
+        }
+        .wxtext12{
+            font-size: 17px;
+            font-family: PingFangSC-Regular;
+            color: #333333;
+            width: 70%;
+            margin-left: 9%;
+            margin-top: 2px;
+        }
+        .wxtext12 span{
+            font-family: PingFangSC-Regular;
+            color: #FEC35E;
+            font-size: 20px;
+            margin-left: 50px;
+        }
+        .wxtext2{
+            text-align: center;
+            font-size: 12px;
+            font-family: PingFangSC-Regular;
+            color: #999999;
+            width: 70%;
+            margin-top: 4px;
+            margin-left: 8%;
+        }
+        .down-div{
+            margin:0rem;
+            background-image:url(./img/invitation/inv2_bg1.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            width: 80%;
+            height: 280px;
+            margin-left: 10%;
+            margin-top: 40px;
+        }
+        .videoplaydiv{
+            position: absolute;
+            left: 0;
+            top:0;
+            width:100%;
+            height: 100%;
+            display: none;
+            background: rgba(0,0,0,.5);
+            text-align: center;
+            z-index: 110;
+        }
+        .videoimgdiv{
+            background-image:url(./img/invitation/teamimg.jpg);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 180px;
+            width: 90%;
+            margin-left: 5%;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .videoimgdiv .videoname{
+            z-index: 9999;
+            height: 20px;
+            color: white;
+            margin-top: 10px;
+        }
+        .videotitle{
+            background-image:url(./img/invitation/invtitle.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 25px;
+            width: 50%;
+            margin-left: 15%;
+            margin-top: -18px;
+            text-align: center;
+            position: absolute;
+            color: #ffffff;
+            font-family: PingFangSC-Regular;
+            padding-top: 8px;
+            font-size: 15px;
+        }
+        .Leaf1-img{
+            position: absolute;
+            top: 270px;
+            right: 0px;
+            width: 60px;
+            z-index: 9999;
+        }
+        .Leaf2-img{
+            position: absolute;
+            top: 330px;
+            left: -10px;
+            width: 60px;
+            z-index: 9999;
+        }
+        .Leaf3-img{
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            width: 70px;
+            z-index: 9999;
+        }
+        .Leaf4-img{
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 60px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body style="background-color:#ffffff;margin:0rem;">
+<input type="hidden" id="userId" value="0">
+
+<div id="mainDiv" class="main-div">
+    <img class="Leaf1-img" src="./img/invitation/Leaf1.png">
+    <img class="Leaf2-img" src="./img/invitation/Leaf2.png">
+    <img class="Leaf3-img" src="./img/invitation/Leaf3.png">
+    <img class="Leaf4-img" src="./img/invitation/Leaf4.png">
+
+    <div class="inv_header">
+    </div>
+
+    <div class="imgdivparent">
+        <div class="imgdivchild">
+            <img id="teamleaderimg"  style="border-radius: 160px;width: 80px;height: 80px;">
+        </div>
+    </div>
+    <!-- 顶部logo -->
+    <div class="head-div">
+        <div class="head-divbg">
+            <div class="invite-info">
+                <div style="width: 100%;height: 150px;padding-top: 55px">
+                    <div class="teamdiv">
+                        <div class="teamno">
+                            队伍编号：<span id="teamNo">1000</span>
+                        </div>
+                        <div class="teamtext" style="margin-top: 20px">
+                            <span id="teamleaderdiv1">我的队伍正在参加</span>
+                        </div>
+                        <div class="teamname">
+                            <span id="teamNamediv" style="color: #FFEB41;">“山东青岛啤酒队”</span><span id="teamNamediv1" style="color: #ffffff;"></span>
+                        </div>
+                        <div class="teamtext">
+                            <span id="teamleaderdiv2">快来给我助力吧！</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-left: -10px; display: none;">
+                    <div  style="position:relative;">
+                        <img class="head-div-img" src="./img/invitation/phone.png">
+                        <input id="telephone" type="tel" class="invite-input" placeholder="请输入手机号" maxlength="11" />
+                    </div>
+                    <div style="position:relative;margin-top: 1px;">
+                        <img class="head-div-img1" src="./img/invitation/mail.png" style="width: 15px;margin-top: 5px;">
+                        <input id="shortCode" type="text" class="invite-input" style="border-bottom:none;" placeholder="请输入验证码" />
+                        <p class="checkno-btn">获取验证码</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="down-div">
+        <div class="videotitle">
+            参赛作品
+        </div>
+        <div id="videolistdiv" style="padding-top: 10px">
+        </div>
+        <div  class="votebtdiv">
+            <input id="invitationbt" type="button" onclick="addvoteBtClick()" class="submit-btn" value="投票" />
+        </div>
+    </div>
+</div>
+
+<div id="videoModal" class="videoplaydiv">
+    <div  style="width:100%;">
+        <div id="videoDiv" style="width: 100%;margin: 0 auto;">
+
+        </div>
+    </div>
+    <div style="width:100%;">
+        <input type="button" onclick="closeVideo();" value="关闭"/>
+    </div>
+</div>
+
+<div class="cover">
+    <div class="arrow">
+        <div class="wxtext1">
+            关注微信公众号“操场”
+        </div>
+        <div class="wxtext11">
+            回复队伍编号
+        </div>
+        <div class="wxtext12">
+            <textarea id="copybt" style="display: none"></textarea>
+            <span id="teamNo1">1111</span><img id="codeBtn" src="./img/invitation/copybt.png" width="40px" style="margin-left: 10px" onclick="copytext()" data-clipboard-target="#copybt">
+        </div>
+        <div style="text-align: center;margin-top:20px;width: 90%;">
+            <img src="./img/invitation/wxapplogo.jpg" width="120px">
+        </div>
+        <div class="wxtext2">
+            即可成功为你喜欢的队伍投票<br>
+            每个微信号每天只能投1票
+        </div>
+        <div  class="votesuccessbtdiv">
+            <span>长按识别二维码</span>
+        </div>
+    </div>
+
+</div>
+
+<script src="./js/jquery-2.0.2.min.js"></script>
+<script src="./js/clipboard.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $(".checkno-btn").click(function(){
+            shortMsgTimer();
+        });
+
+        $(".arrow").click(function (e) {
+            window.event? window.event.cancelBubble = true : e.stopPropagation();
+        });
+
+        $(".cover").click(function (e) {
+            document.getElementsByClassName("cover")[0].style.display = "none";
+            window.event? window.event.cancelBubble = true : e.stopPropagation();
+        });
+
+        $('#votesuccess').click(function(){
+
+            if (browser.versions.mobile) {  //判断是否是移动设备打开。browser代码在下面
+                window.location.href = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.caochang.sports';
+            } else {
+                //否则就是PC浏览器打开
+                Toast("请在手机端打开");
+            }
+
+        });
+
+        $("input").blur(function () {
+            $("html,body").animate({scrollTop: document.documentElement.clientHeight},1000);
+        });
+        getdata();
+        getvideolist();
+    });
+    function getdata(){
+        var userId = geturlpara("userId");
+        var teamId = geturlpara("teamId");
+        var index = geturlpara("index");
+        var secret = geturlpara("secret");
+        var acntype = geturlpara("acntype");
+        localStorage.setItem("userSource","1");
+        $.ajax({
+            url: "https://api.caochangapp.cn/team/getInvitationRequest",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {
+                userId: userId,
+                teamId:teamId,
+                index:index,
+                secret:secret
+            },
+            success: function (data) {
+                if(data.success==true){
+
+                    if(acntype ==1){
+                        $("#teamleaderdiv1").html("我的队伍正在参加");
+                        $("#teamleaderdiv2").html("快来给我助力吧！");
+                        $("#teamNamediv").html("“"+data.result.matchName+"”");
+                    }
+                    else if(acntype ==2){
+                        $("#teamleaderdiv1").html("我已成功为");
+                        $("#teamleaderdiv2").html("邀请你来为TA助力！");
+                        $("#teamNamediv").html("“"+data.result.teamName+"”");
+                        $("#teamNamediv1").html("投出1票");
+
+                    }
+
+                    if(data.result.photoPath==null || data.result.photoPath == ''){
+                        $("#teamleaderimg").attr("src","./img/invitation/logo.png");
+                    }
+                    else {
+                        $("#teamleaderimg").attr("src","https://api.caochangapp.cn"+data.result.photoPath);
+                    }
+                    $("#teamleaderdiv").html(data.result.realName);
+                    $("#teamimg").css("background-image","url('https://api.caochangapp.cn"+data.result.teamImgurl+"')");
+                    $("#teamNo").html(data.result.teamNo);
+                    $("#teamNo1").html(data.result.teamNo);
+                }else{
+                    $("#teamleaderimg").attr("src","./img/invitation/logo.png");
+                }
+            },
+            "error":function (e1,e2,e3) {
+                Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+            }
+        });
+    }
+
+
+    var timerRunning = false;
+    function shortMsgTimer(){
+        var telphone = $("#telephone").val();
+        if(telphone == ""){
+            Toast("手机号不能为空");
+            return;
+        }
+        if(!timerRunning){
+            var n = 60;
+            timerRunning = true;
+            var timer = setInterval(function(){
+                if(n > 0){
+                    $(".checkno-btn").text("已发送(" + n + "s)");
+                    n--;
+                }else {
+                    clearInterval(timer);
+                    $(".checkno-btn").text("获取验证码");
+                    timerRunning = false;
+                }
+            },1000);
+
+            getUserId();
+
+            $.ajax({
+                url: "https://api.caochangapp.cn/user/getVerificationCode",
+                type:"post",
+                async: true,
+                dataType:"json",
+                data: {phone: telphone,type:4},
+                success: function (data) {
+                    if(data.success==true){
+                        Toast("验证码已发送，请注意接收",3000);
+                    }else{
+                        if(data.message == 1000){
+                            Toast("手机号已注册");
+                        }else if(data.message == 1013){
+                            Toast("手机号受限无法使用，请联系客服");
+                        }else{
+                            Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                        }
+                        $(".checkno-btn").text("获取验证码");
+                        timerRunning = false;
+                        clearInterval(timer);
+                    }
+                },
+                "error":function (e1,e2,e3) {
+                    $(".checkno-btn").text("获取验证码");
+                    timerRunning = false;
+                    clearInterval(timer);
+                    Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                }
+            });
+        }
+    }
+
+    function getUserId() {
+        $.ajax({
+            url: "https://api.caochangapp.cn/user/getuserIdByPhone",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {phone: $("#telephone").val()},
+            success: function (data) {
+                if(data.success==true){
+                    $("#userId").val(data.result)
+                }else{
+                    $("#userId").val(0);
+                }
+            },
+            "error":function (e1,e2,e3) {
+
+            }
+        });
+    }
+
+    function addvoteBtClick(){
+        $(window).scrollTop(0);
+        document.getElementsByClassName("cover")[0].style.display = "block";
+
+        // var userid = $("#userId").val();
+        //
+        // if(userid==0){
+        //     registerUser();
+        // }
+    }
+
+    function registerUser(){
+        var telphone = $("#telephone").val();
+        var shortCode = $("#shortCode").val();
+
+        if(telphone == "" || shortCode == ""){
+            Toast("手机号和验证码不能为空");
+            return;
+        }
+        $.ajax({
+            url: "https://api.caochangapp.cn/user/VerificationCodeRegister4H5",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {phone: telphone,verificationCode:shortCode,userSource:2},
+            success: function (data) {
+                if(data.success==true){
+                    $("#userId").val(data.result.userId);
+                    // addvote();
+                    document.getElementsByClassName("cover")[0].style.display = "block";
+                }else{
+                    if(data.message == 1000) {
+                        Toast("您暂时无法投票！");
+                    }else if(data.message == 1008){
+                        Toast("验证码错误");
+                    }else{
+                        Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                    }
+                }
+            }
+        });
+    }
+
+    function addvote(){
+        var teamId = geturlpara("teamId");
+        var voteUserid = $("#userId").val();
+        var index = geturlpara("index");
+        var secret = geturlpara("secret");
+        var phone = $("#telephone").val();
+        var id = geturlpara("userId");
+        var shortCode = $("#shortCode").val();
+
+        if(phone == "" || shortCode == ""){
+            Toast("手机号和验证码不能为空");
+            return;
+        }
+
+        $.ajax({
+            url: "https://api.caochangapp.cn/video/addVoteByHtml",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {id:id,voteUserid: voteUserid,teamId:teamId,index:index,secret:secret,phone:phone,shortCode:shortCode},
+            success: function (data) {
+                if(data.success==true){
+                    document.getElementsByClassName("cover")[0].style.display = "block";
+                }else{
+                    Toast("您当天的投票次数已用完，请明天再来吧！");
+                }
+            }
+        });
+    }
+
+    function geturlpara (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    //模拟toast弹框
+    function Toast(msg,duration){
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="width: 60%;min-width: 150px;opacity: 0.7;height: 30px;color: rgb(255, 255, 255);line-height: 30px;text-align: center;border-radius: 5px;position: fixed;top: 80%;left: 20%;z-index: 999999;background: rgb(0, 0, 0);font-size: 12px;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
+
+    var browser = {
+        versions: function () {
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {   //移动终端浏览器版本信息
+                trident: u.indexOf('Trident') > -1, 	//IE内核
+                presto: u.indexOf('Presto') > -1, 	   //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+                iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+            };
+        }(),
+        language: (navigator.browserLanguage || navigator.language).toLowerCase()
+    }
+
+    function copytext() {
+        if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {//区分iPhone设备
+            window.getSelection().removeAllRanges();//这段代码必须放在前面否则无效
+            var Url2=document.getElementById("teamNo1");//要复制文字的节点
+            var range = document.createRange();
+            // 选中需要复制的节点
+            range.selectNode(Url2);
+            // 执行选中元素
+            window.getSelection().addRange(range);
+            // 执行 copy 操作
+            var successful = document.execCommand('copy');
+
+            // 移除选中的元素
+            window.getSelection().removeAllRanges();
+        }else{
+            var Url2=document.getElementById("teamNo1").innerText;//要复制文字的节点
+            var input = document.createElement("input");
+            input.value = Url2;
+            document.body.appendChild(input);
+            input.select();
+            input.setSelectionRange(0,input.value.length);
+            document.execCommand('Copy');
+            document.body.removeChild(input);
+        }
+
+        Toast("复制成功！");
+    }
+
+    function playVideo(url){
+        $("#videoDiv").empty();
+        var str = '<video width="100%" controls="" autoplay="" name="media">' +
+            '<source id="videoShow" src="'+url+'" type="video/mp4">' +
+            '</video>';
+        $("#videoDiv").append(str);
+        $("#videoModal").css("display","block");
+    }
+
+    function closeVideo() {
+        $("#videoDiv").empty();
+        $("#videoModal").css("display","none");
+    }
+
+    function getvideolist(){
+        var teamId = geturlpara("teamId");
+        $.ajax({
+            url: "https://api.caochangapp.cn/video/getTeamVideoList",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {checkStatus:1,teamId:teamId},
+            success: function (data) {
+                if(data.success==true) {
+                    if (data.result.length > 0) {
+                        var videohtml = "";
+                        var cnt = data.result.length>4?4:data.result.length;
+                        for (var i = 0; i < 1; i++) {
+
+                            if(data.result.length >4 && i==3){
+                                i=4;
+                            }
+                            videohtml += "<div class=\"videoimgdiv\" style=\"background-image:url('" + data.result[i].coverUrl + "');border-radius: 5px;\">";
+                            videohtml += "<img src=\"./img/invitation/bf.png\" width=\"50px\" style=\"margin-top: 75px;\" onclick=\"playVideo('" + data.result[i].videoUrl + "')\">";
+
+                            videohtml += "</div>"
+                        }
+
+                        $("#videolistdiv").html(videohtml);
+                    }
+                }else{
+                    Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                }
+            }
+        });
+    }
+</script>
+
+<div style="display:none;">
+
+</div>
+</body>
+</html>

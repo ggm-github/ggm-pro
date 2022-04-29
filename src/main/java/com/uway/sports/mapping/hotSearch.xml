@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IHotSearchDao">
+
+    <resultMap  id="hotSearchMap"  type="com.uway.sports.web.entity.dbentity.HotSearch" >
+        <result column="id" property="id"/>
+        <result column="hot_type" property="hotType"/>
+        <result column="hot_name" property="hotName"/>
+        <result column="status" property="status"/>
+        <result column="inserttime" property="inserttime"/>
+    </resultMap>
+
+    <sql id="getTableWhere">
+        WHERE 1=1
+        <if test="hotType != null">
+            AND h.hot_type = #{hotType}
+        </if>
+        <if test="status != null">
+            AND h.`status` = #{status}
+        </if>
+        <if test="hotName != '' and hotName != null">
+            AND h.`hot_name` LIKE CONCAT('%',#{hotName},'%')
+        </if>
+    </sql>
+
+    <select id="getHotSearchTable" parameterType="com.uway.sports.web.entity.paraentity.HotSearchTable" resultMap="hotSearchMap">
+        SELECT h.id,h.`hot_name`,h.hot_type,h.`status`,
+                DATE_FORMAT(h.inserttime,'%Y-%m-%d %T') inserttime
+          FROM hot_search h
+        <include refid="getTableWhere" />
+         ORDER BY ${orderBy}
+          limit #{rowStart},#{pageSize}
+    </select>
+
+    <select id="getHotSearchTableCnt" parameterType="com.uway.sports.web.entity.paraentity.HotSearchTable" resultType="java.lang.Integer">
+        SELECT count(1)
+          FROM hot_search h
+         <include refid="getTableWhere" />
+    </select>
+
+    <select id="getHotSearchList" parameterType="com.uway.sports.web.entity.dbentity.HotSearch" resultMap="hotSearchMap">
+        SELECT h.id,h.`hot_name`,h.hot_type,h.`status`
+          FROM hot_search h
+         WHERE 1=1
+        <if test="hotType != null">
+           AND h.hot_type = #{hotType}
+        </if>
+        <if test="status != null">
+           AND h.`status` = #{status}
+        </if>
+        <if test="hotName != '' and hotName != null">
+           AND h.`hot_name` = #{hotName}
+        </if>
+    </select>
+
+    <select id="getHotSearchInfo" parameterType="java.lang.Integer" resultMap="hotSearchMap">
+        SELECT h.id,h.`hot_name`,h.hot_type,h.`status`,
+                DATE_FORMAT(h.inserttime,'%Y-%m-%d %T') inserttime
+          FROM hot_search h
+         WHERE h.id = #{id}
+    </select>
+
+    <update id="updateHotSearchStatus" parameterType="java.util.HashMap">
+        UPDATE hot_search h SET h.`status` = #{statusParam}
+          <include refid="getTableWhere"></include>
+          <if test="id != null">
+           AND h.id = #{id}
+          </if>
+          <if test="ids != null and ids.length > 0">
+           AND h.id in
+              <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                  #{item}
+              </foreach>
+          </if>
+
+     </update>
+
+     <insert id="addHotSearch" parameterType="com.uway.sports.web.entity.dbentity.HotSearch">
+          INSERT INTO `hot_search`
+                  (`hot_type`, `hot_name`, `status`, `inserttime`)
+          VALUES (#{hotType}, #{hotName}, #{status}, NOW())
+     </insert>
+
+     <update id="updateHotSearch" parameterType="com.uway.sports.web.entity.dbentity.HotSearch">
+         UPDATE `hot_search` h
+            SET  h.`hot_type`=#{hotType}, h.`hot_name`=#{hotName},
+                 h.`status`=#{status}
+          WHERE  h.`id` = #{id}
+     </update>
+
+
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.IAdvertisementDao">
+  
+  	<resultMap  id="advertisement_ResultMap"  type="com.uway.sports.web.entity.dbentity.Advertisement" >
+      	<result column="id" property="id"/>
+		<result column="position_type" property="positionType"/>
+		<result column="adv_name" property="advName"/>
+		<result column="adv_url" property="advUrl"/>
+		<result column="picture_path" property="picturePath"/>
+		<result column="advertiser" property="advertiser"/>
+		<result column="adv_cnt" property="advCnt"/>
+		<result column="adv_starttime" property="advStarttime"/>
+		<result column="adv_endtime" property="advEndtime"/>
+		<result column="sort" property="sort"/>
+		<result column="status" property="status"/>
+		<result column="remark" property="remark"/>
+		<result column="opertime" property="opertime"/>
+		<result column="operuser" property="operuser"/>
+		<result column="inserttime" property="inserttime"/>
+		<result column="insertuser" property="insertuser"/>
+  	</resultMap>
+  	<resultMap id="adExtend_ResultMap" type="com.uway.sports.web.entity.paraentity.AdvertisementInfo" extends="advertisement_ResultMap">
+		<result column="insertUserName" property="insertUserName" />
+  	</resultMap>
+	
+  	<sql id="getAdTable_where">
+		<where>
+			<if test="positionType != null">
+				  AND  position_type = #{positionType}
+			</if>
+			<if test="advName != null and advName != ''">
+				  AND  adv_name LIKE concat('%',#{advName},'%')
+			</if>
+			<if test="status != null">
+				  AND  status = #{status}
+			</if>
+			<if test="insertStartDate != null">
+				  AND  inserttime >= #{insertStartDate}
+			</if>
+			<if test="insertEndDate != null">
+				<![CDATA[
+				  AND  inserttime < ADDDATE(#{insertEndDate},INTERVAL 1 DAY)
+				]]>
+			</if>
+	  	</where>
+	</sql>
+
+	<sql id="orderBysql">
+		<if test="orderBy!=null and orderBy !=''">
+			order by ${orderBy}
+		</if>
+	</sql>
+
+	<sql id="limitsql">
+		<if test="rowStart!=null and pageSize !=null">
+			limit #{rowStart},#{pageSize}
+		</if>
+	</sql>
+	 
+  	<select id="getAdTable" parameterType="com.uway.sports.web.entity.paraentity.AdvertisementTable"  resultMap="adExtend_ResultMap">
+      select id, position_type, adv_name, adv_url, picture_path, advertiser, adv_cnt,
+	  		  adv_starttime,adv_endtime,sort, status, remark, opertime, operuser,
+	  		  DATE_FORMAT(inserttime,'%Y-%m-%d') inserttime, insertuser
+	  	from advertisement a
+	  <include refid="getAdTable_where"/>
+	  <include refid="orderBysql" />
+	  <include refid="limitsql" />
+  	</select>
+  
+  	<select id="getAdCnt"	parameterType="com.uway.sports.web.entity.paraentity.AdvertisementTable" resultType="int">
+      select count(1) cnt
+		from advertisement a
+      <include refid="getAdTable_where"/>
+  	</select>
+
+	<select id="getAdInfoById" parameterType="java.lang.Integer"  resultMap="adExtend_ResultMap">
+		select id, position_type, adv_name, adv_url, picture_path, advertiser, adv_cnt,
+				adv_starttime,adv_endtime,sort, status, remark, opertime, operuser,
+				inserttime, insertuser
+		  from advertisement a
+		 WHERE a.id = #{id}
+	</select>
+
+	<insert id="addAdvertisement" parameterType="com.uway.sports.web.entity.dbentity.Advertisement">
+		INSERT INTO `advertisement`
+		 	    (`position_type`, `adv_name`, `adv_url`, `picture_path`, `advertiser`, `adv_cnt`,
+		 	     `adv_starttime`, `adv_endtime`, `sort`, `status`, `remark`, `opertime`, `operuser`,
+		 	     `inserttime`, `insertuser`)
+		VALUES (#{positionType},#{advName},#{advUrl},#{picturePath},#{advertiser},#{advCnt},
+				 #{advStarttime},#{advEndtime},#{sort},0,#{remark},now(),#{operuser},
+				 now(),#{insertuser})
+	</insert>
+
+	<update id="updateAdInfoBy" parameterType="com.uway.sports.web.entity.dbentity.Advertisement">
+		UPDATE `advertisement`
+		   SET
+				<if test="positionType != null">`position_type` = #{positionType},</if>
+				<if test="advName != null and advName != ''">`adv_name` = #{advName},</if>
+				<if test="advUrl != null and advUrl != ''">`adv_url` = #{advUrl},</if>
+				<if test="picturePath != null and picturePath != ''">`picture_path` = #{picturePath},</if>
+				<if test="advertiser != null">`advertiser` = #{advertiser},</if>
+				<if test="advCnt != null">`adv_cnt` = #{advCnt},</if>
+				<if test="advStarttime != null and advStarttime != ''">`adv_starttime` = #{advStarttime},</if>
+				<if test="advEndtime != null and advEndtime != ''">`adv_endtime` = #{advEndtime},</if>
+				<if test="sort != null">`sort` = #{sort},</if>
+				<if test="status != null">`status` = #{status},</if>
+				<if test="remark != null and remark != ''">`remark` = #{remark},</if>
+				<if test="operuser != ''">`operuser` = #{operuser},</if>
+			    `opertime` = now()
+		 WHERE `id` = #{id}
+	</update>
+    
+</mapper>

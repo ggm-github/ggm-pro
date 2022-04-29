@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.IReplyDao">
+
+    <resultMap  id="MomentsReply_ResultMap" type="com.uway.sports.web.entity.dbentity.MomentsReply" >
+        <result column="id" property="id"/>
+        <result column="theme_id" property="themeId"/>
+        <result column="moments_id" property="momentsId"/>
+        <result column="reply_id" property="replyId"/>
+        <result column="reply_userid" property="replyUserid"/>
+        <result column="reply_content" property="replyContent"/>
+        <result column="oper_user_id" property="operUserId"/>
+        <result column="status" property="status"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="updatetime" property="updatetime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="reply_cnt" property="replyCnt" />
+    </resultMap>
+
+    <resultMap  id="momentsReplyResult" type="com.uway.sports.web.entity.paraentity.MomentsReplyResult" extends="MomentsReply_ResultMap">
+        <result column="replyUserChName" property="replyUserChName"/>
+        <result column="operUserChName" property="operUserChName"/>
+    </resultMap>
+
+    <sql id="replyWhere">
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="themeId != null">
+                AND theme_id = #{themeId}
+            </if>
+            <if test="momentsId != null">
+                AND moments_id = #{momentsId}
+            </if>
+            <if test="replyId != null">
+                AND reply_id = #{replyId}
+            </if>
+            <if test="replyUserid != null and replyUserid != 0">
+                AND reply_userid = #{replyUserid}
+            </if>
+            <if test="operUserId != null and operUserId != 0">
+                AND oper_user_id = #{operUserId}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="replyColumn">
+        id, theme_id, moments_id, reply_id, reply_userid, reply_content, oper_user_id, status,reply_cnt,
+        date_format(inserttime,'%Y-%m-%d %T') inserttime, updatetime, update_user,sort,remarks
+    </sql>
+
+    <select id="getMomentsReplyList" parameterType="com.uway.sports.web.entity.paraentity.MomentsReplyTable" resultMap="momentsReplyResult">
+        select <include refid="replyColumn"/>,
+               (select u.ch_name from user u where u.user_id = mr.oper_user_id) operUserChName
+          from moments_reply mr
+        <include refid="replyWhere"/>
+        <if test="orderBy != null and orderBy != ''">
+            order by ${orderBy}
+        </if>
+        <if test="rowStart != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getMomentsReplyCnt" parameterType="com.uway.sports.web.entity.paraentity.MomentsReplyTable" resultType="int">
+        select count(1) cnt
+          from moments_reply
+        <include refid="replyWhere"/>
+    </select>
+
+    <select id="getMomentsReplyById" parameterType="java.lang.Integer" resultMap="momentsReplyResult">
+        select <include refid="replyColumn"/>,
+               (select u.ch_name from user u where u.user_id = mr.oper_user_id) operUserChName
+          from moments_reply mr
+         where id = #{id}
+    </select>
+
+    <update id="updateMomentsReplyBy" parameterType="com.uway.sports.web.entity.dbentity.MomentsReply">
+        update moments_reply
+        <set>
+            <if test="replyUserid != null">reply_userid = #{replyUserid},</if>
+            <if test="replyContent != null and replyContent != ''">reply_content = #{replyContent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="updatetime != null">updatetime = #{updatetime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

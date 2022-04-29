@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IVideoDao">
+
+    <resultMap  id="TeamVideo_ResultMap"  type="com.uway.sports.web.entity.dbentity.TeamVideo" >
+        <result column="id" property="id"/>
+        <result column="team_id" property="teamId"/>
+        <result column="video_url" property="videoUrl"/>
+        <result column="video_name" property="videoName"/>
+        <result column="video_disc" property="videoDisc"/>
+        <result column="video_type" property="videoType"/>
+        <result column="check_status" property="checkStatus"/>
+        <result column="check_user" property="checkUser"/>
+        <result column="is_selected" property="isSelected"/>
+        <result column="vote_cnt" property="voteCnt"/>
+        <result column="team_industry_id" property="teamIndustryId"/>
+        <result column="team_area_id" property="teamAreaId"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="tx_vodTaskId" property="txVodTaskId"/>
+        <result column="read_cnt" property="readCnt"/>
+        <result column="type" property="type"/>
+        <result column="is_works" property="isWorks"/>
+        <result column="oper_user_id" property="operUserId"/>
+        <result column="good_cnt" property="goodCnt"/>
+        <result column="relation_id" property="relationId"/>
+        <result column="reply_cnt" property="replyCnt"/>
+        <result column="share_cnt" property="shareCnt"/>
+    </resultMap>
+
+    <resultMap id="TeamVideoInfo_ResultMap" type="com.uway.sports.web.entity.paraentity.TeamVideoInfo" extends="TeamVideo_ResultMap">
+        <result column="team_no" property="teamNo"/>
+    </resultMap>
+
+
+    <resultMap id="teachingVideo_map" type="com.uway.sports.web.entity.dbentity.TeachingVideo">
+        <result column="teaching_name" property="teachingName" />
+        <result column="video_type" property="videoType" />
+        <result column="teaching_url" property="teachingUrl" />
+        <result column="teaching_disc" property="teachingDisc" />
+        <result column="video_tag" property="videoTag" />
+        <result column="check_status" property="checkStatus" />
+        <result column="check_user" property="checkUser" />
+        <result column="check_reason" property="checkReason" />
+        <result column="read_cnt" property="readCnt" />
+        <result column="insert_user" property="insertUser" />
+        <result column="parent_id" property="parentId" />
+        <result column="cover_url" property="coverUrl" />
+        <result column="is_task" property="isTask" />
+        <result column="fileid" property="fileId" />
+        <result column="theme_id" property="themeId" />
+        <result column="oper_user_id" property="operUserId" />
+    </resultMap>
+
+    <resultMap id="teachingVideInfo_map" type="com.uway.sports.web.entity.paraentity.TeachingVideoInfo" extends="teachingVideo_map">
+
+    </resultMap>
+
+    <resultMap  id="TencentVideoInfo_ResultMap"  type="com.uway.sports.web.entity.dbentity.TencentVideoInfo" >
+        <result column="id" property="id"/>
+        <result column="related_id" property="relatedId"/>
+        <result column="original_file_name" property="originalFileName"/>
+        <result column="video_name" property="videoName"/>
+        <result column="video_disc" property="videoDisc"/>
+        <result column="video_type" property="videoType"/>
+        <result column="check_status" property="checkStatus"/>
+        <result column="check_reason" property="checkReason"/>
+        <result column="check_user" property="checkUser"/>
+        <result column="sort" property="sort"/>
+        <result column="video_url" property="videoUrl"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="fileid" property="fileid"/>
+        <result column="videotime" property="videotime"/>
+        <result column="is_transcode" property="isTranscode"/>
+        <result column="tx_original_url" property="txOriginalUrl"/>
+        <result column="tx_message" property="txMessage"/>
+        <result column="tx_filename" property="txFilename"/>
+        <result column="tx_newfileupload_json" property="txNewfileuploadJson"/>
+        <result column="tx_newfileprocedure_json" property="txNewfileprocedureJson"/>
+        <result column="tx_procedure_json" property="txProcedureJson"/>
+        <result column="tx_pron_point" property="txPronPoint"/>
+        <result column="tx_vodTaskId" property="txVodtaskid"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="read_cnt" property="readCnt"/>
+    </resultMap>
+
+    <resultMap id="TeamImage_ResultMap" type="com.uway.sports.web.entity.dbentity.TeamImage">
+        <result column="id" property="id"/>
+        <result column="teamvideo_id" property="teamvideoId"/>
+        <result column="thumbnail_url" property="thumbnailUrl"/>
+        <result column="image_url" property="imageUrl"/>
+        <result column="image_index" property="imageIndex"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="image_width" property="imageWidth" />
+        <result column="image_height" property="imageHeight" />
+    </resultMap>
+
+    <sql id="limitSql">
+        <if test="rowStart!=null and pageSize !=null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </sql>
+
+    <sql id="orderBySql">
+        <if test="orderBy!=null and orderBy !=''">
+            order by ${orderBy}
+        </if>
+    </sql>
+
+    <sql id="teamVideoWhere">
+        <if test="status != null">
+            AND tv.`status` = #{status}
+        </if>
+        <if test="type != null">
+            and tv.type = #{type}
+        </if>
+        <if test="teamAreaId != null">
+            AND tv.`team_area_id` = #{teamAreaId}
+        </if>
+        <if test="teamIndustryId != null">
+            AND tv.team_industry_id = #{teamIndustryId}
+        </if>
+        <if test="checkStatus != null">
+            AND tv.check_status = #{checkStatus}
+        </if>
+        <if test="isSelected != null">
+            AND tv.is_selected = #{isSelected}
+        </if>
+        <if test="videoType != null">
+            AND tv.video_type = #{videoType}
+        </if>
+        <if test="relationId != null and relationId != 0">
+            and tv.relation_id = #{relationId}
+        </if>
+        <if test="insertTime != null">
+            AND tv.inserttime > #{insertTime}
+        </if>
+        <if test="videoDisc != null and videoDisc != ''">
+            and tv.video_disc like concat('%',#{videoDisc},'%')
+        </if>
+        <if test="operUserId != null">
+            and tv.oper_user_id = #{operUserId}
+        </if>
+
+        <if test="teamIds != null and teamIds.size > 0">
+            AND tv.team_id in
+            <foreach collection="teamIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="getTeamVideoTable" parameterType="com.uway.sports.web.entity.paraentity.TeamVideoTable" resultMap="TeamVideoInfo_ResultMap">
+        SELECT tv.`id`, tv.`team_id`, tv.`video_url`, tv.`cover_url`, tv.`video_name`, tv.`video_disc`, tv.`video_type`,
+                tv.`check_status`, tv.`check_user`, tv.`is_selected`, tv.`sort`, tv.`status`, tv.`vote_cnt`,
+                tv.type,tv.read_cnt,tv.is_works,tv.oper_user_id,tv.good_cnt,tv.relation_id,tv.reply_cnt,tv.share_cnt,
+                (select group_concat(r.theme_id) from theme_moments_rel r where r.video_id = tv.id) themeIds,
+                tv.`team_industry_id`, tv.`team_area_id`, DATE_FORMAT(tv.`inserttime`,'%Y-%m-%d %T') inserttime,tv.tx_vodTaskId
+          FROM team_video tv
+         WHERE 1=1
+        <include refid="teamVideoWhere" />
+        <include refid="orderBySql" />
+        <include refid="limitSql" />
+    </select>
+
+    <select id="getTeamVideoCnt" parameterType="com.uway.sports.web.entity.paraentity.TeamVideoTable" resultType="java.lang.Integer">
+        SELECT count(1) cnt
+          FROM team_video tv
+         WHERE 1=1
+        <include refid="teamVideoWhere" />
+    </select>
+
+    <select id="getTeamVideoIds" parameterType="com.uway.sports.web.entity.paraentity.TeamVideoTable" resultType="java.lang.String">
+        SELECT tv.`id`
+          FROM team_video tv
+         WHERE 1=1
+        <include refid="teamVideoWhere" />
+    </select>
+
+    <select id="getTeamVideoById" parameterType="java.lang.Integer" resultMap="TeamVideoInfo_ResultMap">
+        SELECT tv.`id`, tv.`team_id`, tv.`video_url`, tv.`cover_url`, tv.`video_name`, tv.`video_disc`, tv.`video_type`,
+                tv.`check_status`, tv.`check_user`, tv.`is_selected`, tv.`sort`, tv.`status`, tv.`vote_cnt`,
+                tv.`check_reason`,tv.type,tv.read_cnt,tv.is_works,tv.oper_user_id,tv.good_cnt,tv.relation_id,tv.reply_cnt,tv.share_cnt,
+                tv.`team_industry_id`, tv.`team_area_id`, DATE_FORMAT(tv.`inserttime`,'%Y-%m-%d %T') inserttime
+          FROM team_video tv
+         WHERE tv.id = #{id}
+    </select>
+
+    <update id="updateTeamVideoBy" parameterType="com.uway.sports.web.entity.dbentity.TeamVideo">
+        UPDATE team_video tv
+           SET <if test="checkStatus != null"> tv.check_status = #{checkStatus},</if>
+               <if test="checkReason != null and checkReason != ''">tv.check_reason = #{checkReason},</if>
+			   <if test="checkStatus != null and checkUser != null"> tv.check_user = #{checkUser},</if>
+               <if test="isSelected != null"> tv.is_selected = #{isSelected},</if>
+			   <if test="sort != null"> tv.sort = #{sort},</if>
+			   <if test="goodCnt != null">tv.good_cnt = #{goodCnt},</if>
+               <if test="txPronPoint != null"> tv.tx_pron_point = #{txPronPoint},</if>
+			   tv.`status` = IFNULL(#{status},`status`)
+         WHERE
+        <if test="id != null"> tv.id = #{id}</if>
+        <if test="fileid != null"> tv.fileid = #{fileid}</if>
+    </update>
+
+    <insert id="addTeamVideo" parameterType="com.uway.sports.web.entity.dbentity.TeamVideo" useGeneratedKeys="true" keyProperty="id">
+        insert into team_video
+               (team_id,`type`,video_url,cover_url,video_name,video_disc,video_type,check_status,team_industry_id,team_area_id,
+                inserttime,fileid,videotime,sourceType,tx_original_url,tx_message,tx_filename,tx_newfileupload_json,is_works,
+                oper_user_id,good_cnt,relation_id,reply_cnt,status)
+         value (#{teamId},IFNULL(#{type},2),#{videoUrl},#{coverUrl},#{videoName},#{videoDisc},#{videoType},IFNULL(#{checkStatus},-1),#{teamIndustryId},#{teamAreaId},
+                now(),#{fileid},#{videotime},#{sourcetype},#{txOriginalUrl},#{txMessage},#{txFilename},#{txNewfileuploadJson},#{isWorks},
+                #{operUserId},0,#{relationId},0,#{status})
+    </insert>
+
+    <insert id="addVote" parameterType="com.uway.sports.web.entity.dbentity.Vote">
+        insert into vote (team_id, video_id, vote_userid, inserttime)
+        values
+        (#{teamId},#{videoId},#{voteUserid},#{inserttime})
+    </insert>
+
+    <update id="addTeamVoteCnt"  parameterType="java.util.HashMap"  >
+        update team set vote_cnt = vote_cnt +${voteCnt} where id = ${id}
+    </update>
+
+    <update id="addTeamVideoVoteCnt"  parameterType="java.util.HashMap"  >
+        update team_video set vote_cnt = vote_cnt +${voteCnt} where id = ${id}
+    </update>
+
+
+
+    <sql id="teachingVideoWhere">
+        <if test="videoType != null">
+            AND tv.video_type = #{videoType}
+        </if>
+        <if test="status != null">
+            AND tv.status = #{status}
+        </if>
+        <if test="checkStatus != null">
+            AND tv.check_status = #{checkStatus}
+        </if>
+        <if test="parentId != null">
+            and tv.parent_id = #{parentId}
+        </if>
+        <if test="isTask != null">
+            AND tv.is_task = #{isTask}
+        </if>
+        <if test="teachingName != null and teachingName != ''">
+            AND tv.teaching_name like concat('%',#{teachingName},'%')
+        </if>
+        <if test="startDate != null">
+            AND tv.insertime >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            <![CDATA[
+            AND tv.inserttime < DATE_ADD(#{endDate},INTERVAL 1 DAY)
+            ]]>
+        </if>
+    </sql>
+
+    <insert id="addTeachingVideo" parameterType="com.uway.sports.web.entity.dbentity.TeachingVideo">
+        INSERT INTO `teaching_video`
+			    (`teaching_name`, `video_type`, `teaching_url`, `teaching_disc`,`video_tag`, `check_status`, `check_reason`,
+                `check_user`, `check_time`, `sort`, `status`, `read_cnt`, `insert_user`, `inserttime`,
+                `cover_url`,`parent_id`,`videotime`,`is_task`,`fileid`,`theme_id`,`oper_user_id`)
+        VALUES (#{teachingName},#{videoType},#{teachingUrl},#{teachingDisc},#{videoTag},-1,NULL,
+                NULL,NULL,#{sort},0,0,#{insertUser},NOW(),
+                #{coverUrl},#{parentId},#{videotime},#{isTask},#{fileId},#{themeId},#{operUserId})
+    </insert>
+
+    <select id="getTeachingVideoTable" parameterType="com.uway.sports.web.entity.paraentity.TeachingVideoTable" resultMap="teachingVideInfo_map">
+        SELECT tv.id,tv.`teaching_name`, tv.`video_type`, tv.`teaching_url`, tv.`teaching_disc`, tv.`check_status`, tv.`check_reason`,
+                tv.`check_user`, tv.`sort`, tv.`status`, tv.`read_cnt`, tv.`insert_user`,
+                DATE_FORMAT(tv.`check_time`,'%Y-%m-%d %T') check_time,
+                DATE_FORMAT(tv.`inserttime`,'%Y-%m-%d %T') inserttime,
+                (SELECT u.ch_name FROM sys_user u WHERE u.user_id = tv.insert_user) insertUserName,
+                (SELECT u.ch_name FROM sys_user u WHERE u.user_id = tv.check_user) checkUserName,
+                tv.`video_tag`,`cover_url`,`parent_id`,`videotime`,`is_task`,tv.fileid,tv.theme_id,tv.oper_user_id
+          FROM teaching_video tv
+        WHERE 1=1
+        <include refid="teachingVideoWhere" />
+        <include refid="orderBySql" />
+        <include refid="limitSql" />
+    </select>
+
+    <select id="getTeachingVideoById" parameterType="java.lang.Integer" resultMap="teachingVideInfo_map">
+        SELECT tv.id,tv.`teaching_name`, tv.`video_type`, tv.`teaching_url`, tv.`teaching_disc`, tv.`check_status`, tv.`check_reason`,
+                tv.`check_user`, tv.`check_time`, tv.`sort`, tv.`status`, tv.`read_cnt`, tv.`insert_user`, tv.`inserttime`,
+                tv.`video_tag`,`cover_url`,`parent_id`,`videotime`,`is_task`,tv.theme_id,tv.oper_user_id
+          FROM teaching_video tv
+         WHERE tv.id = #{id}
+    </select>
+
+    <select id="getTeachingVideoCnt" parameterType="com.uway.sports.web.entity.paraentity.TeachingVideoTable" resultType="java.lang.Integer">
+        SELECT count(1) cnt
+          FROM teaching_video tv
+         WHERE 1=1
+        <include refid="teachingVideoWhere" />
+    </select>
+
+    <update id="updateTeachingVideoInfo" parameterType="com.uway.sports.web.entity.dbentity.TeachingVideo">
+        UPDATE teaching_video tv
+           SET tv.teaching_name = #{teachingName},tv.video_type = #{videoType},
+                tv.teaching_url = IFNULL(#{teachingUrl},tv.teaching_url),tv.teaching_disc = #{teachingDisc},
+                tv.sort = #{sort},tv.`video_tag` = #{videoTag},tv.`videotime` = #{videotime},
+                <if test="checkStatus != null">
+                    tv.check_status = #{checkStatus},
+                </if>
+                <if test="status != null">
+                    tv.status = #{status},
+                </if>
+                tv.cover_url = IFNULL(#{coverUrl},tv.cover_url),tv.parent_id = #{parentId},`is_task` = #{isTask},
+                tv.theme_id = #{themeId},tv.oper_user_id = #{operUserId}
+         WHERE tv.id = #{id}
+    </update>
+
+    <update id="updateTeachingVideoBy" parameterType="com.uway.sports.web.entity.dbentity.TeachingVideo">
+        UPDATE teaching_video tv
+        <set>
+            <if test="teachingName != null and teachingName != ''">tv.teaching_video = #{teachingVideo},</if>
+            <if test="videoType != null">tv.video_type = #{videoType},</if>
+            <if test="teachingUrl != null and teachingUrl != ''">tv.teaching_url = #{teachingUrl},</if>
+            <if test="teachingDisc != null and teachingDisc != ''">tv.teaching_disc = #{teachingDisc},</if>
+            <if test="videoTag != null and videoTag != ''">tv.video_tag = #{videoTag},</if>
+            <if test="sort != null">tv.sort = #{sort},</if>
+            <if test="checkStatus != null">tv.check_status = #{checkStatus},</if>
+            <if test="checkStatus != null">tv.check_time = now(),</if>
+            <if test="checkReason != null and checkReason != ''">tv.check_reason = #{checkReason},</if>
+            <if test="checkUser != null">tv.check_user = #{checkUser},</if>
+            <if test="status != null">tv.status = #{status},</if>
+            <if test="videotime != null">tv.videotime = #{videotime},</if>
+            <if test="coverUrl != null">tv.cover_url = #{coverUrl},</if>
+            <if test="parentId != null">tv.parent_id = #{parentId},</if>
+            <if test="isTask != null">tv.is_task = #{isTask},</if>
+            <if test="fileId != null">tv.fileid = #{fileId},</if>
+            <if test="themeId != null">tv.theme_id = #{themeId},</if>
+            <if test="operUserId != null">tv.oper_user_id = #{operUserId},</if>
+        </set>
+         WHERE tv.id = #{id}
+    </update>
+
+    <update id="updateTencentVideoBy" parameterType="com.uway.sports.web.entity.dbentity.TeamVideo">
+        UPDATE tencent_video_info tv
+        <trim prefix="set" suffixOverrides=",">
+            <if test="checkStatus != null">tv.check_status = #{checkStatus},</if>
+            <if test="txPronPoint != null"> tv.tx_pron_point = #{txPronPoint},</if>
+            <if test="videoUrl != null"> tv.video_url = #{videoUrl},</if>
+            <if test="isTranscode != null"> tv.is_transcode = #{isTranscode},</if>
+            <if test="videotime != null"> tv.videotime = #{videotime},</if>
+            <if test="coverUrl != null">tv.cover_url = IF(tv.cover_url is null,#{coverUrl},tv.cover_url),</if>
+        </trim>
+        WHERE
+        <if test="fileid != null"> tv.fileid = #{fileid}</if>
+    </update>
+
+    <select id="getTencentVideoInfos" parameterType="java.lang.String" resultMap="TencentVideoInfo_ResultMap">
+        select *  from tencent_video_info where check_status = -1
+    </select>
+
+    <select id="getTencentVideoBy" parameterType="com.uway.sports.web.entity.paraentity.TencentVideoRequest" resultMap="TencentVideoInfo_ResultMap">
+        select id, related_id, original_file_name, video_name, video_disc, video_type, check_status,
+               check_reason, check_user, sort, video_url, cover_url, fileid, videotime, is_transcode,
+               tx_original_url, tx_message, tx_filename, tx_newfileupload_json, tx_newfileprocedure_json,
+               tx_procedure_json, tx_pron_point, tx_vodTaskId, inserttime, read_cnt
+          from tencent_video_info tvi
+         where tvi.check_status in (-1,0,1)
+        <if test="relatedId != null">
+           and tvi.related_id = #{relatedId}
+        </if>
+        <if test="videoType != null">
+           and tvi.video_type = #{videoType}
+        </if>
+    </select>
+    
+    <select id="getvodTaskIdbyFileId" parameterType="java.lang.String" resultType="com.uway.sports.web.entity.dbentity.TxFiletask">
+        select * from tx_filetask where fileid = #{value} limit 1
+    </select>
+
+    <update id="updateTeachingVideoInfobyTX" parameterType="com.uway.sports.web.entity.dbentity.TeachingVideo">
+        UPDATE teaching_video tv
+        SET
+        tv.teaching_url = #{teachingUrl},
+        tv.`videotime` = #{videotime},
+        tv.check_status = #{checkStatus}
+        WHERE tv.fileid = #{fileId}
+    </update>
+
+    <select id="getTeamImageListByTeamId" parameterType="java.lang.Integer" resultMap="TeamImage_ResultMap">
+        select *
+          from team_image where teamvideo_id = #{teamId}
+         order by image_index
+    </select>
+
+    <select id="getMomentsSimpleInfo" parameterType="com.uway.sports.web.entity.dbentity.TeamVideo" resultType="com.uway.sports.web.entity.paraentity.MomentsSimpleInfo">
+        select tv.id,IFNULL(tv.vote_cnt,0) voteCnt,IFNULL(tv.reply_cnt,0) replyCnt,
+               IFNULL(tv.good_cnt,0) goodCnt,IFNULL(tv.hot_set,0) hotSet
+          from team_video tv
+         where tv.status = 1 and tv.check_status in (-1,0,1)
+           AND (tv.reply_cnt >= 1 OR tv.good_cnt >= 1 OR tv.vote_cnt >= 1)
+           and EXISTS (SELECT 1 FROM theme_moments_rel tr,theme_info ti
+                        WHERE tr.video_id = tv.id AND ti.status = 1 and tr.status = 1
+                          and ti.id = tr.theme_id)
+    </select>
+
+    <update id="updateMomentsHotSet" parameterType="java.util.List">
+        <foreach collection="list" open="" separator="" close="" item="info">
+            update team_video set hot_set = #{info.hotSet} where id = #{info.id};
+        </foreach>
+    </update>
+
+</mapper>

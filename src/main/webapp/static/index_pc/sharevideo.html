@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>帮TA拉票</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="shortcut icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./img/favicon/favicon.ico" type="image/x-icon">
+    <style>
+        .main-div{
+            margin:0rem;
+            background-image:url(./img/invitation/inv_bg.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 130%;
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+        }
+
+        .cover{
+            position: absolute;
+            left: 0;
+            top:0;
+            width:100%;
+            height: 130%;
+            display: none;
+            background: rgba(0,0,0,.8);
+            text-align: center;
+            z-index: 999999;
+        }
+        .videoplaydiv{
+            position: absolute;
+            left: 0;
+            top:0;
+            width:100%;
+            height: 100%;
+            display: none;
+            background: rgba(0,0,0,.5);
+            text-align: center;
+            z-index: 110;
+        }
+        .videoimgdiv{
+            height: 200px;
+            text-align: center;
+        }
+        .videoimgdiv .videoname{
+            z-index: 9999;
+            height: 20px;
+            color: white;
+            margin-top: 10px;
+        }
+        .videotitle{
+            background-image:url(./img/invitation/invtitle.png);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+            height: 25px;
+            width: 50%;
+            margin-left: 15%;
+            margin-top: -18px;
+            text-align: center;
+            position: absolute;
+            color: #ffffff;
+            font-family: PingFangSC-Regular;
+            padding-top: 8px;
+            font-size: 15px;
+        }
+
+        .leftcc-img{
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            height: 40px;
+            z-index: 9999;
+            height: 29px;
+        }
+        .rightcc-img{
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            height: 40px;
+            z-index: 9999;
+            height: 30px;
+        }
+
+        .down-div{
+            margin:0rem;
+            width: 100%;
+            margin-top: 70px;
+        }
+        .videltitle{
+            color: #333333;
+            font-family: PingFangSC-Regular;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-size: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .videlplaycnt{
+            color: #999999;
+            font-family: PingFangSC-Regular;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-size: 15px;
+            margin-top: 10px;
+            height: 40px;
+        }
+        .videolist{
+            width: 92.5%;
+            margin-top: 15px;
+            margin-left: 15px;
+        }
+
+        .videolistitem{
+            width: 100%;
+            height: 80px;
+            display: inline-block;
+            float: left;
+        }
+
+        .videolistitem_div1{
+            width:35%;
+            float:left;
+            display: flex;
+            align-items: center;
+        }
+        .videolistitem_div2{
+            width: 62%;
+            height:60px;
+            float:left;
+            margin-left: 3%;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .videolistitem_div1 img{
+            border-radius: 5px;
+        }
+        .videolistitem_div1_img{
+            position: absolute; left: 60px;height: 30px;width: 30px;
+        }
+    </style>
+</head>
+<body style="background-color:#ffffff;margin:0rem;">
+<input type="hidden" id="userId" value="0">
+
+<div id="mainDiv">
+    <img class="leftcc-img" src="./img/invitation/leftcc.png">
+    <img class="rightcc-img" src="./img/invitation/downimg.png" onclick="gotoapp()">
+    <div class="down-div">
+        <div id="videolistdiv" class="videoimgdiv">
+        </div>
+    </div>
+    <div class="videltitle">
+        <span id="videltitle">中环搭嘎是的个啥打法胜多负少阿斯顿发生</span>
+    </div>
+    <div class="videlplaycnt">
+        <span id="playcnt" style="width: 150px;line-height: 30px;">5000次播放</span>
+        <img src="./img/invitation/rightcc.png" style="position:absolute;right: 15px;height: 25px;"  onclick="gotoapp()">
+    </div>
+
+    <div style="height: 10px;background-color: #f5f7fa;width: 100%;"></div>
+
+    <div class="videltitle" style="margin-top: 15px">
+        <span>热门推荐</span>
+    </div>
+    <div class="videolist" id="videoform">
+        <div class="videolistitem">
+               <div class="videolistitem_div1">
+                   <img src="./img/invitation/bf.png" class="videolistitem_div1_img">
+                   <img src="http://1258908654.vod2.myqcloud.com/002a04bavodtranscq1258908654/f0ca95465285890789474994591/coverBySnapshot/1559006637_10279160.100_0.jpg" width="100%">
+               </div>
+               <div class="videolistitem_div2">
+                       发送到你能激发收到就好阿萨德和发卡行卡收到回复
+               </div>
+        </div>
+        <div class="videolistitem">
+            <div class="videolistitem_div1">
+                <img src="./img/invitation/bf.png" class="videolistitem_div1_img"  onclick="gotoapp()">
+                <img src="http://1258908654.vod2.myqcloud.com/002a04bavodtranscq1258908654/f0ca95465285890789474994591/coverBySnapshot/1559006637_10279160.100_0.jpg" width="100%">
+            </div>
+            <div class="videolistitem_div2">
+                发送到你能激发收到就好阿萨德和发卡行卡收到回复
+            </div>
+        </div>
+        <div class="videolistitem">
+            <div class="videolistitem_div1">
+                <img src="./img/invitation/bf.png" class="videolistitem_div1_img">
+                <img src="http://1258908654.vod2.myqcloud.com/002a04bavodtranscq1258908654/f0ca95465285890789474994591/coverBySnapshot/1559006637_10279160.100_0.jpg" width="100%">
+            </div>
+            <div class="videolistitem_div2">
+                发送到你能激发收到就好阿萨德和发卡行卡收到回复
+            </div>
+        </div>
+        <div class="videolistitem">
+            <div class="videolistitem_div1">
+                <img src="./img/invitation/bf.png" class="videolistitem_div1_img">
+                <img src="http://1258908654.vod2.myqcloud.com/002a04bavodtranscq1258908654/f0ca95465285890789474994591/coverBySnapshot/1559006637_10279160.100_0.jpg" width="100%">
+            </div>
+            <div class="videolistitem_div2">
+                发送到你能激发收到就好阿萨德和发卡行卡收到回复
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./js/jquery-2.0.2.min.js"></script>
+<script src="./js/clipboard.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $(".checkno-btn").click(function(){
+            shortMsgTimer();
+        });
+
+        $(".arrow").click(function (e) {
+            window.event? window.event.cancelBubble = true : e.stopPropagation();
+        });
+
+        $(".cover").click(function (e) {
+            document.getElementsByClassName("cover")[0].style.display = "none";
+            window.event? window.event.cancelBubble = true : e.stopPropagation();
+        });
+
+        $('#votesuccess').click(function(){
+
+            if (browser.versions.mobile) {  //判断是否是移动设备打开。browser代码在下面
+                window.location.href = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.caochang.sports';
+            } else {
+                //否则就是PC浏览器打开
+                Toast("请在手机端打开");
+            }
+
+        });
+
+        getvideolist();
+        getvideos();
+    });
+
+    function geturlpara (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    
+    function playVideo(url){
+        $("#videolistdiv").html("");
+        var str = '<video id="homeVideo" width="100%" height="100%" type="video/mp4" src="'+url+'"' +
+            'autoplay="autoplay" name="media" preload controls="" webkit-playsinline playsinline="true" webkit-playsinline="true" >' +
+            '</video>';
+        $("#videolistdiv").html(str);
+        document.getElementById('homeVideo').play();
+    }
+
+    function closeVideo() {
+        $("#videoDiv").empty();
+        $("#videoModal").css("display","none");
+    }
+
+    function getvideolist(){
+        var videoId = geturlpara("videoId");
+        $.ajax({
+            url: "https://api.caochangapp.cn/video/getTeamVideoList",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {checkStatus:1,id:videoId},
+            success: function (data) {
+                if(data.success==true) {
+                    if (data.result.length > 0) {
+                        var videohtml = "";
+                        var cnt = data.result.length>4?4:data.result.length;
+                        for (var i = 0; i < 1; i++) {
+
+                            if(data.result.length >4 && i==3){
+                                i=4;
+                            }
+                            videohtml += "<div class=\"videoimgdiv\" style=\"background-image:url('" + data.result[i].coverUrl + "');\">";
+                            videohtml += "<img src=\"./img/invitation/bf.png\" width=\"50px\" style=\"margin-top: 75px;\" onclick=\"playVideo('" + data.result[i].videoUrl + "')\">";
+
+                            videohtml += "</div>"
+                        }
+
+                        if(data.result[0].readCnt){
+                            $("#playcnt").html(data.result[0].readCnt+"次播放");
+                        }
+                        else {
+                            $("#playcnt").html("3382次播放");
+                        }
+
+                        $("#videolistdiv").html(videohtml);
+                        $("#videltitle").html(data.result[0].videoName);
+                    }
+                }else{
+                    Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                }
+            }
+        });
+    }
+
+    function getvideos(){
+        $.ajax({
+            url: "https://api.caochangapp.cn/video/getTeamVideoList",
+            type:"post",
+            async: true,
+            dataType:"json",
+            data: {checkStatus:1,isSelected:1},
+            success: function (data) {
+                if(data.success==true) {
+                    if (data.result.length > 0) {
+                        var videohtml = "";
+                        var cnt = data.result.length > 4 ? 4 : data.result.length;
+                        for (var i = 0; i < cnt; i++) {
+                            videohtml += '<div class="videolistitem">';
+                            videohtml += '<div class=\"videolistitem_div1\">';
+                            videohtml += '<img src=\"./img/invitation/bf.png\" class=\"videolistitem_div1_img\"  onclick="gotoapp()">';
+                            videohtml += '<img src=\"' + data.result[i].coverUrl + '\" width=\"100%\">';
+                            videohtml += '</div>';
+                            videohtml += '<div class=\"videolistitem_div2\">';
+                            videohtml += data.result[i].videoName;
+                            videohtml += '</div>';
+                            videohtml += '</div>';
+                        }
+                        $("#videoform").html(videohtml);
+
+                    }
+                }else{
+                    Toast("Error:"+data.message+"  服务器异常，请稍后重试");
+                }
+            }
+        });
+    }
+
+    
+    function gotoapp() {
+        if (browser.versions.mobile) {  //判断是否是移动设备打开。browser代码在下面
+            window.location.href = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.caochang.sports';
+        } else {
+            //否则就是PC浏览器打开
+            Toast("请在手机端打开");
+        }
+    }
+
+    var browser = {
+        versions: function () {
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {   //移动终端浏览器版本信息
+                trident: u.indexOf('Trident') > -1, 	//IE内核
+                presto: u.indexOf('Presto') > -1, 	   //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+                iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+            };
+        }(),
+        language: (navigator.browserLanguage || navigator.language).toLowerCase()
+    }
+</script>
+
+<div style="display:none;">
+
+</div>
+</body>
+</html>

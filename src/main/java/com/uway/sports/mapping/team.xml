@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.ITeamDao">
+    <resultMap  id="Team_ResultMap"  type="com.uway.sports.web.entity.dbentity.Team" >
+        <result column="id" property="id"/>
+        <result column="match_id" property="matchId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="team_no" property="teamNo"/>
+        <result column="team_type" property="teamType" />
+        <result column="team_name" property="teamName"/>
+        <result column="team_imgurl" property="teamImgurl"/>
+        <result column="team_leaderid" property="teamLeaderid"/>
+        <result column="team_disc" property="teamDisc"/>
+        <result column="is_vote" property="isVote"/>
+        <result column="vote_cnt" property="voteCnt"/>
+        <result column="match_industry_id" property="matchIndustryId"/>
+        <result column="match_company" property="matchCompany"/>
+        <result column="match_area_id" property="matchAreaId"/>
+        <result column="team_industry_id" property="teamIndustryId"/>
+        <result column="team_company" property="teamCompany"/>
+        <result column="team_area_id" property="teamAreaId"/>
+        <result column="is_full" property="isFull"/>
+        <result column="check_status" property="checkStatus"/>
+        <result column="vote_status" property="voteStatus"/>
+        <result column="status" property="status"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="team_tag" property="teamTag" />
+    </resultMap>
+
+    <resultMap  id="TeamInfo_ResultMap"  type="com.uway.sports.web.entity.paraentity.TeamInfo" extends="Team_ResultMap">
+        <result column="vote_increase" property="voteIncrease"/>
+        <result column="themeId" property="themeId" />
+    </resultMap>
+
+    <resultMap  id="Ranking_ResultMap"  type="com.uway.sports.web.entity.dbentity.Ranking" >
+        <result column="id" property="id"/>
+        <result column="team_id" property="teamId"/>
+        <result column="area_id" property="areaId"/>
+        <result column="area_previous_sort" property="areaPreviousSort"/>
+        <result column="area_ranking" property="areaRanking"/>
+        <result column="industry_id" property="industryId"/>
+        <result column="industry_previous_sort" property="industryPreviousSort"/>
+        <result column="industry_ranking" property="industryRanking"/>
+        <result column="industry_tag" property="industryTag"/>
+        <result column="area_tag" property="areaTag"/>
+        <result column="updatetime" property="updatetime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <resultMap  id="RankingRequest_ResultMap"  type="com.uway.sports.web.entity.paraentity.RankingRequest" >
+        <result column="rowno" property="rowNo"/>
+        <result column="team_id" property="teamId"/>
+        <result column="team_area_id" property="areaId"/>
+        <result column="match_id" property="matchId"/>
+        <result column="match_item_id" property="matchItemId"/>
+    </resultMap>
+
+    <resultMap  id="RankingChange_ResultMap" type="com.uway.sports.web.entity.dbentity.RankingChange" >
+        <result column="ranking_type" property="rankingType"/>
+        <result column="team_id" property="teamId"/>
+        <result column="vote_cnt_old" property="voteCntOld"/>
+        <result column="ranking_num_old" property="rankingNumOld"/>
+        <result column="vote_cnt_new" property="voteCntNew"/>
+        <result column="ranking_num_new" property="rankingNumNew"/>
+        <result column="ranking_tag" property="rankingTag"/>
+        <result column="is_send" property="isSend"/>
+        <result column="updatetime" property="updatetime"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+
+    <sql id="limitSql">
+        <if test="rowStart!=null and pageSize !=null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </sql>
+
+    <sql id="orderBySql">
+        <if test="orderBy!=null and orderBy !=''">
+            order by ${orderBy}
+        </if>
+    </sql>
+
+    <sql id="teamWhereSql">
+        WHERE 1=1
+        <if test="teamNo != null and teamNo != ''">
+          AND t.team_no = #{teamNo}
+        </if>
+        <if test="teamName != null and teamName != ''">
+            AND t.team_name LIKE concat('%',#{teamName},'%')
+        </if>
+        <if test="status != null">
+            AND t.status = #{status}
+        </if>
+        <if test="matchId != null">
+            AND t.match_id = #{matchId}
+        </if>
+        <if test="teamLeaderid != null">
+            AND t.team_leaderid = #{teamLeaderid}
+        </if>
+        <if test="teamAreaId != null">
+            AND t.team_area_id = #{teamAreaId}
+        </if>
+        <if test="teamIndustryId != null">
+            AND t.team_industry_id = #{teamIndustryId}
+        </if>
+        <if test="matchAreaId != null">
+            AND t.match_area_id = #{matchAreaId}
+        </if>
+        <if test="matchIndustryId != null">
+            AND t.match_industry_id = #{matchIndustryId}
+        </if>
+        <if test="checkStatus != null">
+            AND t.check_status = #{checkStatus}
+        </if>
+        <if test="isVote != null">
+            AND t.is_vote = #{isVote}
+        </if>
+        <if test="matchName != null and matchName != ''">
+            AND EXISTS (SELECT 1 FROM match_news m WHERE m.id = t.match_id
+                            AND m.match_title LIKE CONCAT('%',#{matchName},'%'))
+        </if>
+    </sql>
+
+    <select id="getTeamTable"  parameterType="com.uway.sports.web.entity.paraentity.TeamTable"  resultMap="TeamInfo_ResultMap">
+        select id, match_id, team_no, team_name, team_imgurl, team_leaderid, team_disc, is_vote,
+                vote_cnt, team_industry_id,team_company, team_area_id, is_full, check_status,
+                match_industry_id,match_company,match_area_id,sort,score,IFNULL(a.voteIncrease,0) vote_increase,
+                vote_status, status, DATE_FORMAT(inserttime,'%Y-%m-%d %T') inserttime,team_tag,
+                (SELECT u.ch_name FROM user u WHERE u.user_id = t.team_leaderid) teamLeaderName,
+                (SELECT g.group_name FROM match_group g WHERE g.id = t.group_id) groupName,
+                (SELECT a.area_name FROM area a WHERE a.area_id = t.team_area_id) teamAreaName,
+                (SELECT i.industry_name FROM industry i WHERE i.industry_id = t.team_industry_id) teamIndustryName,
+                (SELECT m.match_title FROM match_news m WHERE m.id = t.match_id) matchName
+          from team t LEFT JOIN (
+                                    SELECT v.team_id, count(1) voteIncrease
+                                      FROM vote v
+                                     WHERE v.`status` = 1
+                                     <![CDATA[
+                                       AND v.inserttime >= #{voteIncreaseStart}
+                                       AND v.inserttime < DATE_ADD(#{voteIncreaseEnd},INTERVAL 1 DAY)
+                                     ]]>
+                                     GROUP BY v.team_id
+                                ) a ON t.id = a.team_id
+        <include refid="teamWhereSql"/>
+        <include refid="orderBySql" />
+        <include refid="limitSql" />
+    </select>
+
+    <select id="getTeamById"  parameterType="java.lang.Integer"  resultMap="TeamInfo_ResultMap">
+        select id, match_id, team_no, team_name, team_imgurl, team_leaderid, team_disc, is_vote,
+                vote_cnt, team_industry_id,team_company, team_area_id, is_full, check_status,
+                match_industry_id,match_company,match_area_id,sort,group_id,score,
+                vote_status, status, inserttime,team_tag
+          from team t
+         WHERE t.id = #{id}
+    </select>
+
+    <select id="getTeamCnt"  parameterType="com.uway.sports.web.entity.paraentity.TeamTable"  resultType="java.lang.Integer">
+        select count(1) cnt
+          from team t
+        <include refid="teamWhereSql"/>
+    </select>
+
+    <update id="updateTeamBy" parameterType="com.uway.sports.web.entity.dbentity.Team">
+        UPDATE team t
+           SET <if test="teamNo != null and teamNo != ''">team_no = #{teamNo},</if>
+               <if test="teamName != null and teamName != ''">team_name = #{teamName},</if>
+               <if test="teamDisc != null and teamDisc != ''">team_disc = #{teamDisc},</if>
+               <if test="groupId != null">group_id = #{groupId},</if>
+               <if test="sort != null">sort = #{sort},</if>
+               <if test="isVote != null">is_vote = #{isVote},</if>
+               <if test="voteStatus != null">vote_status = #{voteStatus},</if>
+               <if test="score != null">score = #{score},</if>
+               <if test="teamTag != null">team_tag = #{teamTag},</if>
+               <if test="checkStatus != null">
+                   check_status = #{checkStatus},
+                   check_time = now(),
+               </if>
+               <if test="checkReason != null and checkReason != ''">
+                   check_reason = #{checkReason},
+               </if>
+               <if test="checkUser != null">
+                   check_user = #{checkUser},
+               </if>
+               t.status = IFNULL(#{status},status)
+         WHERE 1=1
+        <choose>
+            <when test="id != null">AND t.id = #{id}</when>
+            <when test="matchId != null">AND t.match_id = #{matchId}</when>
+            <when test="teamLeaderid != null">AND t.team_leaderid = #{teamLeaderid}</when>
+            <otherwise>AND 1=2</otherwise>
+        </choose>
+    </update>
+
+
+    <update id="updateTeamCloseMult" parameterType="com.uway.sports.web.entity.paraentity.TeamTable">
+        UPDATE team t SET is_vote = #{isVoteParam}
+        <include refid="teamWhereSql" />
+        <if test="ids != null and ids.size > 0">
+            AND t.id in
+            <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+
+
+    <select id="getrankingList" parameterType="java.lang.Integer" resultMap="Ranking_ResultMap">
+		 select
+	        id, team_id, area_id,area_previous_sort, area_ranking, match_id,match_previous_sort, match_ranking, match_tag, area_tag, updatetime, status,
+	        `match_item_id`, `match_item_previous_sort`, `match_item_ranking`, `match_item_tag`
+          from  ranking
+          where team_id = ${value} and status = 1
+	</select>
+
+    <insert id="addranking" parameterType="com.uway.sports.web.entity.dbentity.Ranking">
+		insert into
+		ranking (team_id, area_id,area_ranking, match_id,match_ranking, `match_item_id`,`match_item_ranking`,status)
+		value
+		(#{teamId},#{areaId},#{areaRanking},#{matchId},#{matchRanking},#{matchItemId},#{matchItemRanking},1)
+	</insert>
+
+    <select id="getNowranking" parameterType="com.uway.sports.web.entity.paraentity.RankingRequest" resultMap="RankingRequest_ResultMap">
+		SELECT @xxoo:=@xxoo+1 AS rowno, team.vote_cnt,team.group_id team_area_id,team.match_id,team.id team_id,team.match_item_id match_item_id FROM  team ,(SELECT @xxoo:=0) r
+		where
+        team.status =1
+        <if test="areaId != null">
+          and  team.group_id = ${areaId}
+        </if>
+        <if test="matchId != null">
+          and  team.match_id = ${matchId}
+        </if>
+        <if test="matchItemId != null">
+            and  team.match_item_id = ${matchItemId}
+        </if>
+		order by team.vote_cnt desc
+	</select>
+
+
+    <update id="updateRanking" parameterType="com.uway.sports.web.entity.paraentity.RankingRequest">
+        update ranking
+        <trim prefix="set" suffixOverrides=",">
+            <if test="areaId!=null">area_id=#{areaId},</if>
+            <if test="areaId!=null">area_ranking=#{rowNo},</if>
+            <if test="matchId!=null">match_id=#{matchId},</if>
+            <if test="matchId!=null">match_ranking=#{rowNo},</if>
+            <if test="matchItemId!=null">match_item_id=#{matchItemId},</if>
+            <if test="matchItemId!=null">match_item_ranking=#{rowNo},</if>
+            updatetime=now(),
+        </trim>
+        where team_id = #{teamId} and status = 1
+    </update>
+
+    <select id="getareaorindustryList" parameterType="java.lang.Integer" resultMap="RankingRequest_ResultMap">
+
+        <if test="value == 1">select DISTINCT match_id,group_id team_area_id from team where group_id  is not null</if>
+        <if test="value == 2">select DISTINCT match_id from team</if>
+        <if test="value == 3">select DISTINCT match_id,match_item_id team_area_id from team where match_item_id  is not null</if>
+    </select>
+
+    <update id="updateRankingRowNo">
+        update ranking set area_previous_sort = area_ranking,match_previous_sort =match_ranking,match_item_previous_sort=match_item_ranking where status = 1
+    </update>
+
+    <update id="updateRankingtag">
+        update ranking set
+        <![CDATA[
+            area_tag =
+            case when area_previous_sort > area_ranking then 1
+            when area_previous_sort < area_ranking then 2 else 0 end,
+            match_tag = case when match_previous_sort > match_ranking then 1
+            when match_previous_sort < match_ranking then 2 else 0 end,
+            match_item_tag = case when match_item_previous_sort > match_item_ranking then 1
+            when match_item_previous_sort < match_item_ranking then 2 else 0 end
+            where status = 1
+        ]]>
+     </update>
+
+    <select id="getAllTeamIds" resultType="java.lang.Integer">
+        select id from team t
+    </select>
+
+    <update id="updateTeamMemberStatus" parameterType="com.uway.sports.web.entity.dbentity.TeamMember">
+        update team_member set status = ${status},pass_time=now()
+        where 1=1
+        <if test="id != null">
+            AND  id = ${id}
+        </if>
+        <if test="teamId != null">
+            AND  team_Id = ${teamId}
+        </if>
+        <if test="teamMemberId != null">
+            AND  team_member_id = #{teamMemberId}
+        </if>
+        <if test="nowstatus != null">
+            AND  status = ${nowstatus}
+        </if>
+
+    </update>
+
+
+    <select id="getTeamMemberCnt" parameterType="com.uway.sports.web.entity.dbentity.TeamMember" resultType="int">
+        SELECT count(1) cnt
+          FROM team_member tm
+         WHERE 1=1
+        <if test="teamId != null">
+           and tm.team_id = #{teamId}
+        </if>
+        <if test="teamMemberId != null">
+           and tm.team_member_id = #{teamMemberId}
+        </if>
+        <if test="isLeader != null">
+           AND tm.is_leader = #{isLeader}
+        </if>
+        <if test="status != null">
+           AND tm.`status` = #{status}
+        </if>
+    </select>
+
+
+    <insert id="addTeamRankingDay" parameterType="com.uway.sports.web.entity.dbentity.RankingInDay">
+        INSERT INTO `ranking_in_day`
+               (`team_id`,`match_id`, `ranking_date`, `vote_cnt`, `ranking_num`, `inserttime`)
+        values (#{teamId},#{matchId},#{rankingDate},#{voteCnt},#{rankingNum},now())
+    </insert>
+
+    <select id="getTeamRankingNow" resultType="com.uway.sports.web.entity.dbentity.RankingInDay">
+        SELECT t.id teamId,t.match_id matchId,DATE_ADD(CURRENT_DATE(),INTERVAL -1 DAY) rankingDate,t.vote_cnt voteCnt,
+               @rowno:=@rowno+1 AS rankingNum
+          FROM team t ,(SELECT @rowno:=0) r
+         WHERE t.status = 1 AND t.check_status = 1
+           AND t.match_id = #{matchId}
+           <if test="matchItemId != null">
+           AND t.match_item_id = #{matchItemId}
+           </if>
+         ORDER BY t.vote_cnt DESC
+    </select>
+
+    <update id="updateRankingChangeNewToOld">
+        UPDATE `ranking_change`
+           SET `vote_cnt_old`=`vote_cnt_new`, `ranking_num_old`=`ranking_num_new`,
+               `vote_cnt_new` = null,`ranking_num_new` = null,
+               `ranking_tag`=0, `updatetime`=NOW()
+         where 1=1
+         <if test="rankingType != null">and ranking_type = #{rankingType}</if>
+    </update>
+    
+    <update id="updateRankingChangeOrAdd">
+        INSERT INTO ranking_change
+               (`ranking_type`,`team_id`,`match_id`, `vote_cnt_old`, `ranking_num_old`, `vote_cnt_new`, `ranking_num_new`,`vote_diff`, `ranking_tag`,`is_send`, `updatetime`, `inserttime`, `status`)
+        VALUES (#{rankingType},#{teamId},#{matchId},#{voteCntNew},#{rankingNumNew},#{voteCntNew},#{rankingNumNew},#{voteDiff},0,0,now(),now(),1)
+            ON DUPLICATE KEY
+        UPDATE vote_cnt_new = #{voteCntNew},ranking_num_new = #{rankingNumNew},is_send = 0,
+               <![CDATA[
+               ranking_tag = (case when ranking_num_old < #{rankingNumNew} then 1 when ranking_num_old > #{rankingNumNew} then 2 else 0 end)
+               ]]>
+    </update>
+
+    <insert id="addRankingChange" parameterType="com.uway.sports.web.entity.dbentity.RankingChange">
+        INSERT INTO ranking_change
+               (`ranking_type`,`team_id`,`match_id`, `vote_cnt_old`, `ranking_num_old`, `vote_cnt_new`, `ranking_num_new`,`vote_diff`, `ranking_tag`,`is_send`, `updatetime`, `inserttime`, `status`)
+        VALUES (#{rankingType},#{teamId},#{matchId},#{voteCntNew},#{rankingNumNew},#{voteCntNew},#{rankingNumNew},#{voteDiff},0,0,now(),now(),1)
+    </insert>
+
+    <update id="updateRankingChange" parameterType="com.uway.sports.web.entity.dbentity.RankingChange">
+        UPDATE ranking_change
+           set vote_cnt_new = #{voteCntNew},ranking_num_new = #{rankingNumNew},is_send = 0,
+               ranking_tag = #{rankingTag},vote_diff = #{voteDiff}
+         where team_id = #{teamId} and  ranking_type = #{rankingType}
+    </update>
+
+    <select id="getRankingChangeList" resultMap="RankingChange_ResultMap">
+        select `ranking_type`,`team_id`,`match_id`, `vote_cnt_old`, `ranking_num_old`, `vote_cnt_new`, `ranking_num_new`,
+               `ranking_tag`,`is_send`, `updatetime`, `inserttime`, `status`
+          from ranking_change
+         where team_id = #{teamId} and  ranking_type = #{rankingType}
+    </select>
+
+
+    <update id="updateRankingChangeSend">
+        update ranking_change set is_send = 1
+         where team_id = #{teamId} and ranking_type = #{rankingType}
+    </update>
+
+
+    <select id="getDepartStepInfo" resultType="com.uway.sports.web.entity.paraentity.TeamStepInfo" parameterType="com.uway.sports.web.entity.paraentity.TeamStepInfo">
+        SELECT tu.t_json tJson,SUM(IF(s.step_num >= #{maxStep},#{maxStep},s.step_num)) totalStepNum,
+               COUNT(DISTINCT tu.user_id) totalMember
+          FROM team_user tu , user_step_num s
+         WHERE tu.match_id = #{matchId} AND tu.match_item_id = #{itemId}
+           AND tu.team_id IS not null AND tu.t_json IS not NULL
+           AND tu.user_id = s.user_id
+        <if test="startDate != null">
+           and s.step_date >= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+        </if>
+        <if test="endDate != null">
+            <![CDATA[
+           AND s.step_date <= #{endDate}
+            ]]>
+        </if>
+        AND EXISTS (SELECT 1 FROM `user` u WHERE u.user_id = tu.user_id AND u.status = 1)
+        AND EXISTS (SELECT 1 FROM team t WHERE t.status = 1 AND t.check_status = 1 AND t.id = tu.team_id
+                       and t.match_id = #{matchId} AND t.match_item_id = #{itemId})
+        GROUP BY tu.t_json
+    </select>
+
+    <select id="getDepartMemberStepInfo" resultType="com.uway.sports.web.entity.paraentity.TeamStepInfo" parameterType="com.uway.sports.web.entity.paraentity.TeamStepInfo">
+        SELECT tu.user_id userId,tu.t_json tJson,tu.t_username userChName,
+               SUM(IF(s.step_num >= #{maxStep},#{maxStep},s.step_num)) totalStepNum
+          FROM team_user tu , user_step_num s
+         WHERE tu.match_id = #{matchId} AND tu.match_item_id = #{itemId}
+           AND tu.team_id IS not null AND tu.t_json IS not NULL
+           AND tu.user_id = s.user_id
+        <if test="startDate != null">
+            and s.step_date >= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+        </if>
+        <if test="endDate != null">
+            <![CDATA[
+           AND s.step_date <= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+        </if>
+           AND EXISTS (SELECT 1 FROM `user` u WHERE u.user_id = tu.user_id AND u.status = 1)
+           AND EXISTS (SELECT 1 FROM team t WHERE t.status = 1 AND t.check_status = 1 AND t.id = tu.team_id
+                          AND t.match_id = #{matchId} AND t.match_item_id = #{itemId})
+         GROUP BY tu.user_id
+    </select>
+
+    <select id="getTeamlistForNotWorksMoments" resultMap="TeamInfo_ResultMap">
+        SELECT t.id,t.match_id,t.match_item_id,t.team_type,t.team_name,t.team_imgurl,t.team_leaderid,i.id themeId
+          FROM team t LEFT JOIN theme_info i ON i.match_id = t.match_id AND i.`status` = 1 AND i.theme_type = 2
+         WHERE t.`status` = 1 AND t.check_status = 1
+         <![CDATA[
+           AND t.inserttime <= DATE_ADD(NOW(),INTERVAL -30 MINUTE)
+           AND t.inserttime > DATE_ADD(NOW(),INTERVAL -60 MINUTE)
+         ]]>
+           AND EXISTS (SELECT 1 FROM match_news m WHERE m.status = 1 AND t.match_id = m.id AND m.is_vote = 1)
+           AND not EXISTS (SELECT 1 FROM team_video tv WHERE tv.status = 1 AND tv.check_status in (-1,0,1)
+                              AND tv.team_id = t.id AND tv.video_type = 1 AND tv.is_works = 1
+                          )
+    </select>
+
+    <select id="getTeamMemberListForNotice" resultType="com.uway.sports.web.entity.dbentity.TeamMember">
+        SELECT m.team_id teamId,m.team_member_id teamMemberId,u.ch_name teamMemberName
+          FROM team_member m,`user` u
+         WHERE m.`status` = 1 AND u.`status` = 1
+           AND m.team_member_id = u.user_id
+           AND m.team_id in
+           <foreach collection="teamIds" open="(" separator="," close=")" item="item">
+               #{item}
+           </foreach>
+    </select>
+
+</mapper>

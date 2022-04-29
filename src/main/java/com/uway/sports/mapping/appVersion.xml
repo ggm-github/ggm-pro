@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IAppVersionDao">
+
+    <resultMap id="version_resultMap" type="com.uway.sports.web.entity.dbentity.AppVersion">
+        <result column="version_id" property="versionId" />
+        <result column="version_type" property="versionType" />
+        <result column="version_code" property="versionCode" />
+        <result column="last_version" property="lastVersion" />
+        <result column="version_info" property="versionInfo" />
+        <result column="version_url" property="versionUrl" />
+        <result column="lower_version" property="lowerVersion" />
+        <result column="is_must_update" property="isMustUpdate"/>
+        <result column="status" property="status" />
+    </resultMap>
+
+    <select id="getAppVersionList" resultMap="version_resultMap" parameterType="com.uway.sports.web.entity.paraentity.AppVersionRequest">
+        SELECT a.version_id,a.version_type,a.version_code,a.is_must_update,
+                a.last_version,a.version_info,a.`status`,a.version_url
+          FROM app_version a
+         WHERE 1=1
+         <if test="status != null">
+           AND a.`status` = #{status}
+         </if>
+         <if test="versionType != null">
+           AND a.version_type = #{versionType}
+         </if>
+         <if test="versionId != null">
+           AND a.version_id = #{versionId}
+         </if>
+         ORDER BY a.create_time DESC
+    </select>
+
+    <insert id="addAppVersion" parameterType="com.uway.sports.web.entity.dbentity.AppVersion">
+        INSERT INTO `app_version`
+                (`version_type`, `version_code`, `last_version`, `lower_version`,
+                 `version_info`, `version_url`, `is_must_update`,`create_time`, `update_time`, `status`)
+        VALUES (#{versionType},(SELECT IFNULL(MAX(a.version_code),0)+1 FROM app_version a
+                                  WHERE a.version_type = #{versionType}),
+                 #{lastVersion},#{lowerVersion}, #{versionInfo},#{versionUrl},#{isMustUpdate},
+                 NOW(),NOW(),#{status})
+    </insert>
+
+    <update id="updateAppVersion" parameterType="com.uway.sports.web.entity.dbentity.AppVersion">
+        UPDATE app_version
+           SET last_version = #{lastVersion},lower_version = #{lowerVersion},version_url = #{versionUrl},
+                version_info = #{versionInfo},is_must_update = #{isMustUpdate},
+                status = #{status},update_time = now()
+         WHERE version_id = #{versionId}
+    </update>
+
+</mapper>

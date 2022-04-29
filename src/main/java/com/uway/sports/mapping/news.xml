@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.INewsDao">
+    <resultMap  id="sportsNews_ResultMap"  type="com.uway.sports.web.entity.paraentity.SportsNewsInfo" >
+        <result column="news_title" property="newsTitle"/>
+        <result column="sub_news_title" property="subNewsTitle"/>
+        <result column="news_imgurl" property="newsImgurl"/>
+        <result column="news_author" property="newsAuthor"/>
+        <result column="news_type" property="newsType"/>
+        <result column="news_url" property="newsUrl"/>
+        <result column="news_content" property="newsContent"/>
+        <result column="read_cnt" property="readCnt"/>
+        <result column="opt_user" property="optUser"/>
+        <result column="opt_time" property="optTime"/>
+        <result column="sort_type" property="sortType"/>
+        <result column="sort_date" property="sortDate"/>
+    </resultMap>
+
+    <resultMap  id="MatchNewsInfo_ResultMap" type="com.uway.sports.web.entity.paraentity.MatchNewsInfo" >
+        <result column="id" property="id"/>
+        <result column="match_title" property="matchTitle"/>
+        <result column="match_imgurl" property="matchImgurl"/>
+        <result column="match_unit" property="matchUnit"/>
+        <result column="match_city" property="matchCity"/>
+        <result column="match_place" property="matchPlace"/>
+        <result column="match_time" property="matchTime"/>
+        <result column="match_content" property="matchContent"/>
+        <result column="match_bake" property="matchBake"/>
+        <result column="match_industry" property="matchIndustry"/>
+        <result column="match_company" property="matchCompany"/>
+        <result column="match_area" property="matchArea"/>
+        <result column="match_type" property="matchType"/>
+        <result column="match_url" property="matchUrl"/>
+        <result column="sort" property="sort"/>
+        <result column="status" property="status"/>
+        <result column="read_cnt" property="readCnt"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="opt_user" property="optUser"/>
+        <result column="opt_time" property="optTime"/>
+        <result column="sort_type" property="sortType"/>
+        <result column="sort_date" property="sortDate"/>
+        <result column="match_endtime" property="matchEndtime"/>
+        <result column="date_begin" property="dateBegin"/>
+        <result column="date_end" property="dateEnd"/>
+        <result column="match_tag" property="matchTag"/>
+        <result column="is_charge" property="isCharge"/>
+        <result column="unit_price" property="unitPrice"/>
+        <result column="charge_type" property="chargeType"/>
+        <result column="user_limit" property="userLimit"/>
+        <result column="user_max" property="userMax"/>
+        <result column="charge_notice" property="chargeNotice"/>
+        <result column="signup_notice" property="signupNotice"/>
+        <result column="is_need_video" property="isNeedVideo"/>
+        <result column="item_names" property="itemNames"/>
+        <result column="match_province_id" property="matchProvinceId"/>
+        <result column="match_city_id" property="matchCityId"/>
+        <result column="charge_interval" property="chargeInterval"/>
+        <result column="match_remark" property="matchRemark"/>
+        <result column="is_vote" property="isVote"/>
+        <result column="publish_range" property="publishRange"/>
+        <result column="ranking_day" property="rankingDay"/>
+        <result column="ranking_week" property="rankingWeek"/>
+        <result column="ranking_month" property="rankingMonth"/>
+    </resultMap>
+
+    <resultMap  id="MatchGroup_ResultMap"  type="com.uway.sports.web.entity.dbentity.MatchGroup" >
+        <result column="id" property="id"/>
+        <result column="match_id" property="matchId"/>
+        <result column="match_title" property="matchTitle"/>
+        <result column="group_name" property="groupName"/>
+        <result column="status" property="status"/>
+        <result column="inserttime" property="inserttime"/>
+    </resultMap>
+
+    <resultMap id="matchItemRelInfo" type="com.uway.sports.web.entity.paraentity.MatchItemRelInfo">
+        <result column="match_id" property="matchId" />
+        <result column="item_id" property="itemId" />
+        <result column="name" property="itemName" />
+        <result column="team_limit" property="teamLimit" />
+        <result column="template_id" property="templateId" />
+        <result column="is_charge" property="isCharge" />
+        <result column="unit_price" property="unitPrice" />
+        <result column="charge_type" property="chargeType" />
+        <result column="charge_notice" property="chargeNotice" />
+        <result column="system_property" property="systemProperty" />
+        <result column="custom_property" property="customProperty" />
+        <result column="signup_notice" property="signupNotice" />
+        <result column="signup_notice_status" property="signupNoticeStatus" />
+        <result column="is_need_audit" property="isNeedAudit" />
+        <result column="parentItemName" property="parentItemName" />
+        <result column="minUser" property="minUser" />
+        <result column="maxUser" property="maxUser" />
+        <result column="team_or_person" property="teamOrPerson" />
+        <result column="parent_id" property="parentId" />
+    </resultMap>
+
+
+    <sql id="limit_sql">
+        <if test="rowStart!=null and pageSize !=null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </sql>
+
+    <sql id="orderBy_sql">
+        <if test="orderBy!=null and orderBy !=''">
+            order by ${orderBy}
+        </if>
+    </sql>
+
+
+    <insert id="addSportsNews" parameterType="com.uway.sports.web.entity.dbentity.SportsNews">
+        INSERT INTO `sports_news`
+                (`news_title`,`sub_news_title`, `news_imgurl`, `news_author`, `news_type`, `news_url`,
+                 `news_content`, `sort`, `tag`, `status`, `read_cnt`, `inserttime`,
+                 `opt_user`, `opt_time`,`sort_type`,`sort_date`)
+        VALUES (#{newsTitle},#{subNewsTitle},#{newsImgurl},#{newsAuthor},#{newsType},#{newsUrl},
+                 #{newsContent},#{sort},#{tag},0,0,now(),
+                 #{optUser},now(),#{sortType},#{sortDate})
+    </insert>
+
+    <update id="updateSportsNews" parameterType="com.uway.sports.web.entity.dbentity.SportsNews">
+        UPDATE `sports_news`
+           SET `news_title` = #{newsTitle}, `sub_news_title` = #{subNewsTitle},
+                `news_imgurl` = #{newsImgurl}, `news_author` = #{newsAuthor},
+                `news_type` = #{newsType}, `news_url` = #{newsUrl}, `news_content` = #{newsContent},
+                `sort` = #{sort}, `tag` = #{tag}, `opt_user` = #{optUser}, `opt_time` = now(),
+                `sort_type` = #{sortType},`sort_date` = #{sortDate}
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateSportsNewsBy" parameterType="com.uway.sports.web.entity.dbentity.SportsNews">
+        UPDATE `sports_news`
+           SET
+                <if test="newsTitle != null and newsTitle != ''">
+                   `news_title` = #{newsTitle},
+                </if>
+                <if test="subNewsTitle != null and subNewsTitle != ''">
+                   `sub_news_title` = #{subNewsTitle},
+                </if>
+                <if test="newsImgurl != null and newsImgurl != ''">
+                    `news_imgurl` = #{newsImgurl},
+                </if>
+                <if test="newsAuthor != null and newsAuthor != ''">
+                    `news_author` = #{newsAuthor},
+                </if>
+                <if test="newsType != null">
+                    `news_type` = #{newsType},
+                </if>
+                <if test="newsUrl != null and newsUrl != ''">
+                    `news_url` = #{newsUrl},
+                </if>
+                <if test="newsContent != null and newsContent != ''">
+                    `news_content` = #{newsContent},
+                </if>
+                <if test="sort != null">
+                    `sort` = #{sort},
+                </if>
+                <if test="tag != null">
+                    `tag` = #{tag},
+                </if>
+                <if test="status != null">
+                    `status` = #{status},
+                </if>
+                <if test="sortType != null">
+                    `sort_type` = #{sortType},
+                </if>
+                <if test="sortDate != null and sortDate != ''">
+                    `sort_date` = #{sortDate},
+                </if>
+                `opt_user` = #{optUser}, `opt_time` = now()
+        WHERE id = #{id}
+    </update>
+
+    <sql id="sportsNews_where">
+        WHERE 1=1
+        <if test="newsTitle != null and newsTitle != ''">
+          AND s.`news_title` LIKE CONCAT('%',#{newsTitle},'%')
+        </if>
+        <if test="status != null">
+            AND s.`status` = #{status}
+        </if>
+    </sql>
+
+    <select id="getSportsNewsTable" parameterType="com.uway.sports.web.entity.paraentity.SportsNewsTable" resultMap="sportsNews_ResultMap">
+        SELECT `id`, `news_title`, `sub_news_title`, `news_imgurl`, `news_author`, `news_type`, `news_url`,
+                `news_content`, `sort`, `tag`, `status`, `read_cnt`, DATE_FORMAT(`inserttime`,'%Y-%m-%d %T') inserttime,
+                `opt_user`,(SELECT u.ch_name FROM sys_user u WHERE u.user_id = s.opt_user) optUserName,
+                DATE_FORMAT(`opt_time`,'%Y-%m-%d %T') opt_time,`sort_type`,DATE_FORMAT(`sort_date`,'%Y-%m-%d') sort_date
+          FROM `sports_news` s
+        <include refid="sportsNews_where"/>
+        <include refid="orderBy_sql" />
+        <include refid="limit_sql" />
+    </select>
+    <select id="getSportsNewsCnt" parameterType="com.uway.sports.web.entity.paraentity.SportsNewsTable" resultType="java.lang.Integer">
+        SELECT count(1) cnt
+          FROM `sports_news` s
+        <include refid="sportsNews_where"/>
+    </select>
+    <select id="getSportsNewsById" parameterType="java.lang.Integer" resultMap="sportsNews_ResultMap">
+        SELECT `id`,`news_title`, `sub_news_title`, `news_imgurl`, `news_author`, `news_type`, `news_url`,
+                `news_content`, `sort`, `tag`, `status`, `read_cnt`,DATE_FORMAT(`inserttime`,'%Y-%m-%d %T') inserttime,
+                `opt_user`, DATE_FORMAT(`opt_time`,'%Y-%m-%d %T') opt_time,`sort_type`,DATE_FORMAT(`sort_date`,'%Y-%m-%d') sort_date
+          FROM `sports_news` s
+         WHERE s.id = #{id}
+    </select>
+
+    <update id="updateNewsReadCnt" parameterType="java.lang.Integer">
+        update sports_news set read_cnt = read_cnt +1 where id = #{id}
+    </update>
+
+    <update id="updateSportsNewsExpireSort">
+        UPDATE sports_news s SET s.sort = 0
+         WHERE s.sort_type = 2 AND s.sort >= 1
+        <![CDATA[
+           AND s.sort_date < NOW()
+        ]]>
+    </update>
+
+    <!--  =====================   赛事 ============================  -->
+    <sql id="matchNewsWhere">
+        WHERE 1=1
+        <if test="status != null">
+          AND m.`status` = #{status}
+        </if>
+        <if test="isVote != null">
+          AND m.is_vote = #{isVote}
+        </if>
+        <if test="matchArea != null">
+          AND m.match_area = #{matchArea}
+        </if>
+        <if test="matchIndustry != null">
+          AND m.match_industry = #{matchIndustry}
+        </if>
+        <if test="matchTitle != null and matchTitle != ''">
+          AND m.match_title LIKE CONCAT('%',#{matchTitle},'%')
+        </if>
+        <if test="checkDate != null">
+        <![CDATA[
+          and m.match_time <= DATE_FORMAT(#{checkDate},'%Y-%m-%d')
+          and m.date_end >= DATE_FORMAT(#{checkDate},'%Y-%m-%d')
+        ]]>
+        </if>
+    </sql>
+
+    <insert id="addMatchNews" parameterType="com.uway.sports.web.entity.dbentity.MatchNews">
+        INSERT INTO `match_news`
+                (`match_title`, `match_imgurl`, `match_unit`, `match_city`, `match_place`, `match_time`,
+                 `match_content`, `match_bake`, `match_industry`, `match_company`, `match_area`,
+                 `match_type`, `match_url`, `sort`, `status`, `read_cnt`, `inserttime`, `opt_user`,
+                 `opt_time`,`sort_type`,`sort_date`,`match_endtime`,`date_begin`,`date_end`,`match_tag`,
+                 `is_charge`,`unit_price`,`charge_type`,`user_limit`,`charge_notice`,`signup_notice`,
+                 `user_max`)
+        VALUES (#{matchTitle},#{matchImgurl},#{matchUnit},#{matchCity},#{matchPlace},#{matchTime},
+                 #{matchContent},#{matchBake},#{matchIndustry},#{matchCompany},#{matchArea},
+                 #{matchType},#{matchUrl},#{sort},1,0,NOW(),#{optUser},
+                 NOW(),#{sortType},#{sortDate},#{matchEndtime},#{dateBegin},#{dateEnd},#{matchTag},
+                 #{isCharge},#{unitPrice},#{chargeType},#{userLimit},#{chargeNotice},#{signupNotice},
+                 #{userMax})
+    </insert>
+
+    <select id="getMatchNewsTable" parameterType="com.uway.sports.web.entity.paraentity.TeamTable" resultMap="MatchNewsInfo_ResultMap">
+        SELECT id , `match_title`, `match_imgurl`, `match_unit`, `match_city`, `match_place`,`match_content`, `match_bake`,
+               `match_industry`,`match_company`, `match_area`, DATE_FORMAT(`match_time`,'%Y-%m-%d %T') match_time,
+               `match_type`, `match_url`, `sort`,(SELECT u.ch_name FROM sys_user u WHERE u.user_id = m.opt_user) optUserName,
+               `status`, `read_cnt`, DATE_FORMAT(`inserttime`,'%Y-%m-%d %T') inserttime, `opt_user`, `opt_time`,
+               `sort_type`,`sort_date`,DATE_FORMAT(`match_endtime`,'%Y-%m-%d %T') match_endtime,
+               is_charge,unit_price,charge_type,user_limit,charge_notice,signup_notice,`user_max`,reason,
+               DATE_FORMAT(`date_begin`,'%Y-%m-%d %T') date_begin,DATE_FORMAT(`date_end`,'%Y-%m-%d %T') date_end,`match_tag`,
+               is_need_video,match_province_id,match_city_id,charge_interval,match_remark,is_vote,publish_range,
+               ranking_day,ranking_week,ranking_month,
+               (SELECT GROUP_CONCAT(mi.`name`) FROM match_item_rela mir,match_item mi
+                 WHERE mir.match_id = m.id AND mir.item_id = mi.id) item_names
+               /*(SELECT i.industry_name FROM industry i WHERE i.industry_id = m.match_industry) matchIndustryName*/
+          FROM match_news m
+        <include refid="matchNewsWhere" />
+        <include refid="orderBy_sql" />
+        <include refid="limit_sql" />
+    </select>
+
+    <select id="getMatchNewsCnt" parameterType="com.uway.sports.web.entity.paraentity.TeamTable" resultType="java.lang.Integer">
+        SELECT count(1) cnt
+          FROM match_news m
+        <include refid="matchNewsWhere" />
+    </select>
+
+    <select id="getMatchNewsById" parameterType="java.lang.Integer" resultMap="MatchNewsInfo_ResultMap">
+        SELECT id , `match_title`, `match_imgurl`, `match_unit`, `match_city`, `match_place`,`match_content`, `match_bake`,
+               `match_industry`,`match_company`, `match_area`, DATE_FORMAT(`match_time`,'%Y-%m-%d %T') match_time,
+               `match_type`, `match_url`, `sort`,(SELECT u.ch_name FROM sys_user u WHERE u.user_id = m.opt_user) optUserName,
+               `status`, `read_cnt`, DATE_FORMAT(`inserttime`,'%Y-%m-%d %T') inserttime, `opt_user`, `opt_time`,
+               `sort_type`,`sort_date`,DATE_FORMAT(`match_endtime`,'%Y-%m-%d %T') match_endtime,
+               (SELECT a.area_name FROM area a WHERE a.area_id = m.match_province_id) matchProvinceName,
+               (SELECT a.area_name FROM area a WHERE a.area_id = m.match_city_id) matchCityName,
+               is_charge,unit_price,charge_type,user_limit,charge_notice,signup_notice,`user_max`,reason,
+               DATE_FORMAT(`date_begin`,'%Y-%m-%d %T') date_begin,DATE_FORMAT(`date_end`,'%Y-%m-%d %T') date_end,`match_tag`,
+               is_need_video,match_province_id,match_city_id,charge_interval,match_remark,is_vote,publish_range,
+               ranking_day,ranking_week,ranking_month,
+               (SELECT GROUP_CONCAT(mi.`name`) FROM match_item_rela mir,match_item mi
+                 WHERE mir.match_id = m.id AND mir.item_id = mi.id) item_names
+          FROM match_news m WHERE m.id = #{id}
+    </select>
+
+    <update id="updateMatchNews" parameterType="com.uway.sports.web.entity.dbentity.MatchNews">
+        UPDATE `match_news` m
+           SET `match_title` = #{matchTitle},`match_imgurl` = #{matchImgurl},`match_unit` = #{matchUnit},
+                `match_city` = #{matchCity},`match_place` = #{matchPlace},`match_time` = #{matchTime},
+                `match_content` = #{matchContent},`match_bake` = #{matchBake},`match_industry` = #{matchIndustry},
+                `match_company` = #{matchCompany},`match_area` = #{matchArea},`match_type` = #{matchType},
+                `match_url` = #{matchUrl},`sort` = #{sort},`opt_user` = #{optUser},
+                `opt_time` = NOW(),`sort_type` = #{sortType},`sort_date` = #{sortDate},`match_endtime` = #{matchEndtime},
+                `date_begin` = #{dateBegin},`date_end` = #{dateEnd},`match_tag` = #{matchTag},
+                `is_charge` = #{isCharge},`unit_price` = #{unitPrice},`charge_type` = #{chargeType},
+                `user_limit` = #{userLimit},`charge_notice` = #{chargeNotice},`signup_notice` = #{signupNotice},
+                `user_max` = #{userMax}
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateMatchNewsBy" parameterType="com.uway.sports.web.entity.dbentity.MatchNews">
+         UPDATE `match_news` m
+            SET <if test="matchTitle != null and matchTitle != ''">`match_title` = #{matchTitle},</if>
+                <if test="matchImgurl != null and matchImgurl != ''">`match_imgurl` = #{matchImgurl}</if>
+                <if test="matchUnit != null and matchUnit != ''">`match_unit` = #{matchUnit},</if>
+                <if test="matchCity != null and matchCity != ''">`match_city` = #{matchCity},</if>
+                <if test="matchPlace != null and matchPlace != ''">`match_place` = #{matchPlace},</if>
+                <if test="matchTime != null and matchTime != ''">`match_time` = #{matchTime},</if>
+                <if test="matchContent != null and matchContent != ''">`match_content` = #{matchContent},</if>
+                <if test="matchBake != null and matchBake != ''">`match_bake` = #{matchBake},</if>
+                <if test="matchIndustry != null">`match_industry` = #{matchIndustry},</if>
+                <if test="matchCompany != null and matchCompany != ''">`match_company` = #{matchCompany},</if>
+                <if test="matchArea != null">`match_area` = #{matchArea},</if>
+                <if test="matchType != null">`match_type` = #{matchType},</if>
+                <if test="matchUrl != null and matchUrl != ''">`match_url` = #{matchUrl},</if>
+                <if test="sort != null">`sort` = #{sort},</if>
+                <if test="status != null">`status` = #{status},</if>
+                <if test="sortType != null">`sort_type` = #{sortType},</if>
+                <if test="sortDate != null">`sort_date` = #{sortDate},</if>
+                <if test="matchEndtime != null and matchEndtime != ''">`match_endtime` = #{matchEndtime},</if>
+                <if test="dateBegin != null and dateBegin != ''">`date_begin` = #{dateBegin},</if>
+                <if test="dateEnd != null and dateEnd != ''">`date_end` = #{dateEnd},</if>
+                <if test="matchTag != null and matchTag != ''">`match_tag` = #{matchTag},</if>
+                <if test="isCharge != null">`is_charge` = #{isCharge},</if>
+                <if test="unitPrice != null">`unit_price` = #{unitPrice},</if>
+                <if test="chargeType != null">`charge_type` = #{chargeType},</if>
+                <if test="userLimit != null">`user_limit` = #{userLimit},</if>
+                <if test="userMax != null">`user_max` = #{userMax},</if>
+                <if test="chargeNotice != null and chargeNotice != ''">`charge_notice` = #{chargeNotice},</if>
+                <if test="signupNotice != null and signupNotice != ''">`signup_notice` = #{signupNotice},</if>
+                <if test="reason != null and reason != ''">`reason` = #{reason},</if>
+                <if test="rankingDay != null">`ranking_day` = #{rankingDay},</if>
+                <if test="rankingWeek != null">`ranking_week` = #{rankingWeek},</if>
+                <if test="rankingMonth != null">`ranking_month` = #{rankingMonth},</if>
+                `opt_user` = #{optUser},`opt_time` = NOW()
+          WHERE id = #{id}
+    </update>
+
+    <update id="updateMatchNewsExpireSort">
+        UPDATE match_news m SET m.sort = 0
+         WHERE m.sort_type = 2 AND m.sort >= 1
+        <![CDATA[
+           AND m.sort_date < NOW()
+        ]]>
+    </update>
+
+    <!--================赛事小组============================-->
+    <sql id="group_where">
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="matchId != null">
+                AND match_id = #{matchId}
+            </if>
+            <if test="matchTitle != null and matchTitle != ''">
+                AND match_title LIKE concat('%',#{matchTitle},'%')
+            </if>
+            <if test="groupName != null and groupName != ''">
+                AND group_name LIKE concat('%',#{groupName},'%')
+            </if>
+            <if test="status != null">
+                AND  status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getMatchGroupList"  parameterType="com.uway.sports.web.entity.paraentity.MatchGroupTable"  resultMap="MatchGroup_ResultMap">
+        select id, match_id, match_title, group_name, status,
+                date_format(inserttime,'%Y-%m-%d %T') inserttime
+          from match_group
+        <include refid="group_where"/>
+        <include refid="orderBy_sql" />
+        <include refid="limit_sql"/>
+    </select>
+
+    <select id="getMatchGroupCnt"   parameterType="com.uway.sports.web.entity.paraentity.MatchGroupTable"  resultType="int">
+        select count(1) cnt
+          from match_group
+        <include refid="group_where"/>
+    </select>
+
+    <select id="getMatchGroupById"  parameterType="java.lang.Integer"  resultMap="MatchGroup_ResultMap">
+        select id, match_id, match_title, group_name, status,
+                date_format(inserttime,'%Y-%m-%d %T') inserttime
+          from match_group
+         WHERE id = #{id}
+    </select>
+
+    <insert id="addMatchGroup" parameterType="com.uway.sports.web.entity.dbentity.MatchGroup">
+        INSERT INTO match_group
+                (match_id, match_title, group_name, status, inserttime)
+        VALUES (#{matchId},#{matchTitle},#{groupName},1,now())
+    </insert>
+
+    <update id="updateMatchGroupInfo" parameterType="com.uway.sports.web.entity.dbentity.MatchGroup">
+        UPDATE match_group
+           SET match_id = #{matchId},match_title = #{matchTitle},
+                group_name = #{groupName}
+         WHERE id = #{id}
+    </update>
+
+    <update id="updateMatchGroupBy" parameterType="com.uway.sports.web.entity.dbentity.MatchGroup">
+        UPDATE match_group
+          <set>
+                <if test="matchId != null">match_id = #{matchId},</if>
+                <if test="matchTitle != null and matchTitle != ''">match_title = #{matchTitle},</if>
+                <if test="groupName != null and groupName != ''">group_name = #{groupName},</if>
+                <if test="status != null">status = #{status},</if>
+          </set>
+         WHERE id = #{id}
+    </update>
+
+    <select id="getItemByMatchId" parameterType="java.lang.Integer" resultMap="matchItemRelInfo">
+        SELECT mir.match_id,mir.item_id,mir.team_limit,mir.template_id,mir.is_charge,
+               mir.unit_price,mir.charge_type,mir.charge_notice,mir.system_property,
+               mir.custom_property,mir.signup_notice,mir.signup_notice_status,
+			   mir.is_need_audit,mi.`name`,mi.team_or_person,mi.parent_id,
+			   (CASE WHEN mi.female = 0 AND mi.male = 0 THEN mi.min else mi.female + mi.male END) minUser,
+			   (CASE WHEN mi.female = 0 AND mi.male = 0 THEN mi.max else mi.female + mi.male END) maxUser,
+			   (SELECT m.name FROM match_item m WHERE m.id = mi.parent_id) parentItemName
+          FROM match_item_rela mir,match_item mi
+         WHERE mir.item_id = mi.id
+           AND mir.match_id = #{matchId}
+    </select>
+
+</mapper>

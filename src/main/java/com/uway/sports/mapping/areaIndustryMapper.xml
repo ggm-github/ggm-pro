@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.IAreaIndustryDao">
+
+    <resultMap id="Area_ResultMap" type="com.uway.sports.web.entity.paraentity.JsTreeEntity" >
+        <result column="area_id" property="id"/>
+        <result column="area_name" property="text"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+    <resultMap id="Area_ResultMap1" type="com.uway.sports.web.entity.paraentity.JsTreeEntity" extends="Area_ResultMap">
+        <collection property="children" ofType="Area_ResultMap2"
+                    javaType="java.util.ArrayList" select="getAreaTree"
+                    column="area_id">
+        </collection>
+    </resultMap>
+    <resultMap id="Area_ResultMap2" type="com.uway.sports.web.entity.paraentity.JsTreeEntity" extends="Area_ResultMap">
+        <!--<collection property="children" ofType="Area_ResultMap"
+                    javaType="java.util.ArrayList" select="getAreaList"
+                    column="area_id">
+        </collection>-->
+    </resultMap>
+
+    <resultMap id="areaInfo_ResultMap" type="com.uway.sports.web.entity.dbentity.Area" >
+        <result column="area_id" property="areaId"/>
+        <result column="area_name" property="areaName"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="is_hot" property="isHot"/>
+        <result column="hot_sort" property="hotSort"/>
+    </resultMap>
+
+
+    <resultMap  id="Industry_ResultMap"  type="com.uway.sports.web.entity.paraentity.JsTreeEntity" >
+        <result column="industry_id" property="id"/>
+        <result column="industry_name" property="text"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+    <resultMap id="Industry_ResultMap1" type="com.uway.sports.web.entity.paraentity.JsTreeEntity" extends="Industry_ResultMap">
+        <collection property="children" ofType="Industry_ResultMap"
+                    javaType="java.util.ArrayList" select="getIndustryTree"
+                    column="industry_id">
+        </collection>
+    </resultMap>
+
+    <select id="getAreaTree" parameterType="java.lang.Integer" resultMap="Area_ResultMap1">
+        SELECT a.area_id,a.area_name,a.parent_id
+          FROM area a
+         WHERE a.`status` = 1
+           AND a.parent_id = #{parentId}
+         ORDER BY a.letter ASC,a.area_id ASC
+    </select>
+
+    <select id="getIndustryTree" parameterType="java.lang.Integer" resultMap="Industry_ResultMap1">
+        SELECT i.industry_id,i.industry_name,i.parent_id
+          FROM industry i
+         WHERE i.`status` = 1
+           AND i.parent_id = #{parentId}
+        ORDER BY i.industry_id ASC
+    </select>
+
+
+    <sql id="area_where">
+        <if test="areaId != null">
+            and a.area_id = #{areaId}
+        </if>
+        <if test="status != null">
+            and a.status = #{status}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            and a.area_name like concat('%',#{areaName},'%')
+        </if>
+        <if test="parentId != null">
+            and a.parent_id = #{parentId}
+        </if>
+        <if test="isHot != null">
+            and a.is_hot = #{isHot}
+        </if>
+        <if test="parentId != null">
+            and a.letter = #{letter}
+        </if>
+    </sql>
+
+    <select id="getAreaList" parameterType="com.uway.sports.web.entity.paraentity.AreaRequest" resultMap="areaInfo_ResultMap">
+        select `area_id`, `area_name`, `parent_id`, `letter`, `status`, `is_hot`, `hot_sort`
+          from area a
+         where 1=1
+        <include refid="area_where"/>
+        <if test="orderBy != null and orderBy != ''">
+            order by ${orderBy}
+        </if>
+        <if test="rowStart != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getAreaCnt" parameterType="com.uway.sports.web.entity.paraentity.AreaRequest" resultType="int">
+        select count(1) cnt
+          from area a
+         where 1=1
+        <include refid="area_where"/>
+    </select>
+
+    <select id="getAreaById" parameterType="java.lang.Integer" resultMap="areaInfo_ResultMap">
+        select `area_id`, `area_name`, `parent_id`, `letter`, `status`, `is_hot`, `hot_sort`
+          from area a
+         where area_id = #{areaId}
+    </select>
+    <update id="updateAreaBy" parameterType="com.uway.sports.web.entity.dbentity.Area">
+        UPDATE `area`
+        <set>
+            <if test="areaName != null and areaName != ''">`area_name`= #{areaName},</if>
+            <if test="parentId != null">`parent_id`= #{parentId},</if>
+            <if test="letter != null and letter != ''">`letter`= #{letter},</if>
+            <if test="status != null">`status`= #{status},</if>
+            <if test="isHot != null">`is_hot`= #{isHot},</if>
+            <if test="hotSort != null">`hot_sort`= #{hotSort},</if>
+        </set>
+        WHERE `area_id` = #{areaId}
+    </update>
+
+    <insert id="addArea" parameterType="com.uway.sports.web.entity.dbentity.Area">
+        INSERT INTO `area`
+               (`area_id`, `area_name`, `parent_id`, `letter`, `status`, `is_hot`, `hot_sort`)
+        VALUES (#{areaId},#{areaName},#{parentId},#{letter},IFNULL(#{status},1),IFNULL(#{isHot},0),IFNULL(#{hotSort},0))
+    </insert>
+
+</mapper>

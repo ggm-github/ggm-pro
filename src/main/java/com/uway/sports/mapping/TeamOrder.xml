@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.uway.sports.web.dao.ITeamOrderDao">
+
+    <resultMap  id="TeamOrder_ResultMap"  type="com.uway.sports.web.entity.dbentity.TeamOrder" >
+        <result column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="order_type" property="orderType"/>
+        <result column="user_id" property="userId"/>
+        <result column="match_id" property="matchId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="charge_type" property="chargeType"/>
+        <result column="numbers" property="numbers"/>
+        <result column="unit_price" property="unitPrice"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="pay_type" property="payType"/>
+        <result column="pay_no" property="payNo"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="pay_json" property="payJson"/>
+        <result column="pay_price" property="payPrice"/>
+        <result column="trode_account" property="trodeAccount"/>
+        <result column="oper_remark" property="operRemark"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="invoice_payable" property="invoicePayable"/>
+        <result column="taxpayer_identity" property="taxpayerIdentity"/>
+        <result column="match_title" property="matchTitle"/>
+        <result column="phone" property="phone"/>
+        <result column="match_item_id" property="matchItemId"/>
+    </resultMap>
+
+    <resultMap  id="TeamOrderExport_ResultMap"  type="com.uway.sports.web.entity.excel.OrderExport" >
+        <result column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="order_type" property="orderType"/>
+        <result column="user_id" property="userId"/>
+<!--        <result column="match_id" property="matchId"/>-->
+<!--        <result column="team_id" property="teamId"/>-->
+        <result column="charge_type" property="chargeType"/>
+        <result column="numbers" property="numbers"/>
+        <result column="unit_price" property="unitPrice"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="pay_type" property="payType"/>
+        <result column="pay_no" property="payNo"/>
+        <result column="pay_time" property="payTime"/>
+<!--        <result column="pay_json" property="payJson"/>-->
+        <result column="pay_price" property="payPrice"/>
+        <result column="trode_account" property="trodeAccount"/>
+        <result column="oper_remark" property="operRemark"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="inserttime" property="inserttime"/>
+        <result column="invoice_payable" property="invoicePayable"/>
+        <result column="taxpayer_identity" property="taxpayerIdentity"/>
+        <result column="match_title" property="matchTitle"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+    <resultMap id="invoice_resultMap" type="com.uway.sports.web.entity.dbentity.Invoice">
+        <result column="invoice_type" property="invoiceType"/>
+        <result column="invoice_payable" property="invoicePayable"/>
+        <result column="taxpayer_identity" property="taxpayerIdentity"/>
+    </resultMap>
+
+    <sql id="limitSql">
+        <if test="rowStart!=null and pageSize !=null">
+            limit #{rowStart},#{pageSize}
+        </if>
+    </sql>
+
+    <sql id="orderBySql">
+        <if test="orderBy!=null and orderBy !=''">
+            order by ${orderBy}
+        </if>
+    </sql>
+
+    <sql id="Teamorder_Where_Clause">
+        <where>
+            <if test="id != null">
+                AND  t.id = ${id}
+            </if>
+            <if test="orderNo != null and orderNo != ''">
+                AND  t.order_No = ${orderNo}
+            </if>
+            <if test="userId != null">
+                AND  t.user_Id = #{userId}
+            </if>
+            <if test="matchId != null">
+                AND  t.match_id = ${matchId}
+            </if>
+            <if test="teamId != null">
+                AND  t.team_id = ${teamId}
+            </if>
+            <if test="orderStatus != null">
+                AND  t.order_status = ${orderStatus}
+            </if>
+
+            <if test="startDate!=null and startDate!=''">
+                AND t.inserttime &gt;= #{startDate}
+            </if>
+
+            <if test="endDate!=null and endDate!=''">
+                AND t.inserttime &lt;= #{endDate}
+            </if>
+
+            <if test="paystartDate!=null and paystartDate!=''">
+                AND t.pay_time &gt;= #{startDate}
+            </if>
+            <if test="payendDate!=null and payendDate!=''">
+                AND t.pay_time &lt;= #{endDate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getTeamOrderList"  parameterType="java.util.HashMap"  resultMap="TeamOrder_ResultMap">
+        select
+        t.id, t.order_no, t.order_type, t.user_id, t.match_id, t.team_id, t.charge_type, t.numbers, t.unit_price, t.total_price, t.pay_type,
+        t.pay_no, DATE_FORMAT(t.pay_time,'%Y-%m-%d %T') pay_time, t.pay_json, t.pay_price, t.trode_account, t.oper_remark, t.order_status,
+        DATE_FORMAT(t.inserttime,'%Y-%m-%d %T') inserttime, inv.invoice_payable,
+        inv.taxpayer_identity,t.phone,t.match_title,t.match_item_id
+        from   team_order t
+        left join invoice inv on inv.orderid = t.id
+        <include refid="Teamorder_Where_Clause"/>
+        <include refid="orderBySql"/>
+        <include refid="limitSql"/>
+    </select>
+
+    <select id="getTeamOrderListcount"   parameterType="java.util.HashMap"  resultType="int">
+        select  count(1)  from   team_order t
+        <include refid="Teamorder_Where_Clause"/>
+        <include refid="orderBySql"/>
+    </select>
+
+    <update id="updateTeamOrder" parameterType="java.util.HashMap">
+        update team_order
+        <trim prefix="set" suffixOverrides=",">
+            <if test="invoicePayable!=null">invoice_payable = #{invoicePayable},</if>
+            <if test="taxpayerIdentity!=null">taxpayer_identity=#{taxpayerIdentity},</if>
+            <if test="orderStatus!=null">order_status=#{orderStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <select id="getExportOrderList"  parameterType="java.util.HashMap"  resultMap="TeamOrderExport_ResultMap">
+        select
+        t.id, t.order_no,
+        (case t.order_type when 1 then '报名费' else '' end) order_type,
+        t.user_id,
+        (case t.charge_type when 1 then '统一交费' when 2 then '自己交费' else '' end) charge_type,
+        t.numbers, t.unit_price, t.total_price,
+        (case t.pay_type when 1 then '微信' when 2 then '支付宝' else '' end) pay_type,
+        t.pay_no, t.pay_time, replace(t.pay_json,CHAR(10),'') pay_json, t.pay_price, t.trode_account, t.oper_remark,
+        (case t.order_status when 0 then '待付款' when 1 then '已付款' else '订单失效' end) order_status,
+        t.inserttime, inv.invoice_payable,
+        inv.taxpayer_identity,t.phone,t.match_title
+        from   team_order t
+        left join invoice inv on inv.orderid = t.id
+        <include refid="Teamorder_Where_Clause"/>
+        <include refid="orderBySql"/>
+    </select>
+
+    <select id="getTeamOrders"  parameterType="java.util.HashMap"  resultMap="TeamOrder_ResultMap">
+        select
+        t.id, t.order_no, t.order_type, t.user_id, t.match_id, t.team_id, t.charge_type, t.numbers, t.unit_price, t.total_price, t.pay_type,
+        t.pay_no, t.pay_time, t.pay_json, t.pay_price, t.trode_account, t.oper_remark, t.order_status, t.inserttime, inv.invoice_payable,
+        inv.taxpayer_identity,t.phone,t.match_title,t.match_item_id
+        from   team_order t
+        left join invoice inv on inv.orderid = t.id
+        <include refid="Teamorder_Where_Clause"/>
+    </select>
+
+    <select id="getInvoice" parameterType="java.lang.Integer" resultMap="invoice_resultMap">
+        SELECT `id`, `orderid`, `invoice_type`, `invoice_payable`, `taxpayer_identity`, `bake`,
+               `address`, `bank`, `price`, `mail`, `mailaddress`, `mailphone`, `receiver`,
+               `status`, date_format(`inserttime`,'%Y-%m-%d %T') inserttime
+          FROM `invoice`
+         WHERE orderid = #{orderid}
+    </select>
+
+</mapper>

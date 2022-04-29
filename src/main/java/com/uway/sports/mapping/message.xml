@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.uway.sports.web.dao.IMessageDao">
+
+
+    <resultMap  id="message_resultMap"  type="com.uway.sports.web.entity.paraentity.MessageResponse" >
+        <result column="message_id" property="messageId"/>
+        <result column="message_type" property="messageType"/>
+        <result column="message_second_type" property="messageSecondType"/>
+        <result column="card_id" property="cardId"/>
+        <result column="rel_id" property="relId"/>
+        <result column="rel_name" property="relName"/>
+        <result column="pic_url" property="picUrl"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="referent_name" property="referentName"/>
+        <result column="referent_url" property="referentUrl"/>
+        <result column="referent_dsc" property="referentDsc"/>
+        <result column="area_id" property="areaId"/>
+        <result column="industry_id" property="industryId"/>
+        <result column="match_id" property="matchId"/>
+        <result column="area_name" property="areaName"/>
+        <result column="industry_name" property="industryName"/>
+        <result column="match_name" property="matchName"/>
+        <result column="open_way" property="openWay" />
+        <result column="add_param_json" property="addParamJson" />
+        <result column="is_umeng" property="isUmeng" />
+    </resultMap>
+
+    <sql id="getTableWhere">
+        WHERE 1=1
+        <if test="messageType != null">
+            AND p.message_type = #{messageType}
+        </if>
+        <if test="status != null">
+            AND p.`status` = #{status}
+        </if>
+        <if test="relId != null">
+            AND p.rel_id = #{relId}
+        </if>
+        <if test="messageId != null">
+            AND p.message_id = #{messageId}
+        </if>
+    </sql>
+
+    <select id="getMessageTable" parameterType="com.uway.sports.web.entity.paraentity.MessagePushTable" resultMap="message_resultMap">
+        SELECT p.message_id,p.message_type,p.card_id,p.rel_id,p.pic_url,p.message_second_type,
+                DATE_FORMAT(p.create_time,'%Y-%m-%d') create_time,p.`referent_url`,
+                DATE_FORMAT(p.update_time,'%Y-%m-%d') update_time,
+                p.`status`,referent_name,p.area_id,p.industry_id,p.match_id,p.`referent_dsc`,
+                p.open_way,p.add_param_json,p.`is_umeng`,
+                (SELECT a.area_name FROM area a WHERE a.area_id = p.area_id) area_name,
+                (SELECT i.industry_name FROM industry i WHERE i.industry_id = p.industry_id) industry_name
+          FROM message_push p
+        <include refid="getTableWhere" />
+        <if test="orderBy != null and orderBy != ''">
+         ORDER BY ${orderBy}
+        </if>
+        <if test="rowStart != null">
+          limit #{rowStart},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getMessageTableCnt" parameterType="com.uway.sports.web.entity.paraentity.MessagePushTable" resultType="java.lang.Integer">
+        SELECT count(1)
+          FROM message_push p
+        <include refid="getTableWhere" />
+    </select>
+    
+    <sql id="insertSql">
+        INSERT INTO `message_push`
+                (`message_type`,`message_second_type`,`card_id`, `rel_id`,`pic_url`, `create_time`,
+                 `update_time`, `status`, `user_id`,`referent_name`,`referent_dsc`,`referent_url`,
+                 `area_id`,`industry_id`,`match_id`,`team_id`,`open_way`,`add_param_json`,`is_umeng`)
+    </sql>
+
+    <insert id="addMessage" parameterType="com.uway.sports.web.entity.dbentity.MessagePush">
+        <include refid="insertSql"/>
+        VALUES (#{messageType},#{messageSecondType}, null, IFNULL(#{relId},0),#{picUrl}, NOW(),
+                NOW(), IFNULL(#{status},0),#{userId},#{referentName},#{referentDsc},#{referentUrl} ,
+                #{areaId},#{industryId},#{matchId},#{teamId},IFNULL(#{openWay},-1),#{addParamJson},IFNULL(#{isUmeng},0))
+    </insert>
+
+    <insert id="addMessageByTeam" parameterType="com.uway.sports.web.entity.dbentity.MessagePush">
+        <include refid="insertSql"/>
+        SELECT #{messageType},#{messageSecondType},null,#{relId},#{picUrl},NOW(),
+               NOW(),1,tm.team_member_id,#{referentName},#{referentDsc},#{referentUrl},
+               #{areaId},#{industryId},#{matchId},#{teamId},IFNULL(#{openWay},-1),null,0
+          FROM team t,team_member tm
+         WHERE t.id = tm.team_id AND tm.status = 1
+           AND t.`status` = 1 AND t.check_status = 1
+        <if test="areaId != null">
+           AND t.team_area_id = #{areaId}
+        </if>
+        <if test="industryId != null">
+           AND t.team_industry_id = #{industryId}
+        </if>
+        <if test="teamId != null">
+            AND t.id = #{teamId}
+        </if>
+
+    </insert>
+
+    <insert id="addMessageForAll" parameterType="com.uway.sports.web.entity.dbentity.MessagePush">
+        <include refid="insertSql"/>
+        SELECT #{messageType},#{messageSecondType},null,#{relId},#{picUrl},NOW(),NOW(),
+                1,u.user_id,#{referentName},#{referentDsc},#{referentUrl},#{areaId},#{industryId},
+                #{matchId},#{teamId},IFNULL(#{openWay},-1),NULL,0
+          FROM `user` u
+         WHERE u.status = 1
+    </insert>
+    <insert id="addMessageByUser" parameterType="com.uway.sports.web.entity.paraentity.MessageInUser">
+        <include refid="insertSql"/>
+        SELECT #{messagePush.messageType},#{messagePush.messageSecondType},null,#{messagePush.relId},#{messagePush.picUrl},NOW(),NOW(),
+               1,u.user_id,#{messagePush.referentName},#{messagePush.referentDsc},#{messagePush.referentUrl},#{messagePush.areaId},#{messagePush.industryId},
+               #{messagePush.matchId},#{messagePush.teamId},#{messagePush.openWay},#{messagePush.addParamJson},0
+          FROM `user` u
+         WHERE u.user_id in
+         <foreach collection="idList" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </insert>
+
+    <select id="getMessageInfoById" parameterType="java.lang.Integer" resultMap="message_resultMap">
+        SELECT p.message_id,p.message_type,p.rel_id,p.pic_url,p.message_second_type,
+               DATE_FORMAT(p.create_time,'%Y-%m-%d') create_time,p.`referent_url`,
+               DATE_FORMAT(p.update_time,'%Y-%m-%d') update_time,
+               p.`status`,referent_name,p.area_id,p.industry_id,p.match_id,p.`referent_dsc`,
+               p.open_way,p.add_param_json,p.`is_umeng`,
+               (SELECT a.area_name FROM area a WHERE a.area_id = p.area_id) area_name,
+               (SELECT i.industry_name FROM industry i WHERE i.industry_id = p.industry_id) industry_name
+        FROM message_push p WHERE p.message_id = #{messageId}
+    </select>
+
+    <update id="updateMessageStatus" parameterType="java.util.HashMap">
+        UPDATE message_push p SET p.`status` = #{statusParam}
+        <include refid="getTableWhere"></include>
+        <if test="id != null">
+            AND (p.message_id = #{id} OR p.rel_id = #{id})
+        </if>
+        <if test="ids != null and ids.length > 0">
+            AND
+            (
+                p.message_id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+                OR p.rel_id in
+                    <foreach collection="ids" item="item" open="(" close=")" separator=",">
+                        #{item}
+                    </foreach>
+            )
+        </if>
+    </update>
+
+    <insert id="addUmenpush" parameterType="com.uway.sports.web.entity.paraentity.PushMessage">
+        insert into umeng_push
+                (`title`,`subtitle`,`body`,`url`,`imageurl`,`activity`,`type`,`messageType`,`inserttime`,`alias`)
+        VALUES (#{title},#{subtitle},#{body},#{url},#{imageurl},#{activity},#{type},#{messageType},now(),#{alias})
+    </insert>
+    <select id="getListByUmenPush" parameterType="com.uway.sports.web.entity.dbentity.UmengPush" resultType="com.uway.sports.web.entity.dbentity.UmengPush">
+        select * from umeng_push
+        <where>
+            <if test="startTime!=null and startTime!=''">
+                inserttime >= #{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                and inserttime &lt;= #{endTime}
+            </if>
+        </where>
+        <if test="orderBy != null and orderBy != ''">
+            ORDER BY ${orderBy}
+        </if>
+        <if test="rowStart!=null and pageSize !=null">
+            LIMIT #{rowStart},#{pageSize}
+        </if>
+    </select>
+    <select id="getCountByUmengPush" parameterType="com.uway.sports.web.entity.dbentity.UmengPush" resultType="java.lang.Long">
+        select count(id) from umeng_push
+        <where>
+            <if test="startTime!=null and startTime!=''">
+                inserttime >= #{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                and inserttime &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPushdeviceList" resultType="com.uway.sports.web.entity.dbentity.Pushdevice">
+        select `id`, `user_id`, `device_id`, `idfa`, `terminal_type`, `inserttime`, `appId`
+          from pushdevice
+         where 1=1
+         <if test="terminalType != null">
+           and terminal_type = #{terminalType}
+         </if>
+           and user_id in
+         <foreach collection="userIdList" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+    </select>
+</mapper>
